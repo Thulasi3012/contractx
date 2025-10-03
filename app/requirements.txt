@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+python-dotenv 
+pydantic_settings
+service
+pdf2image
+fitz
+pytesseract
+doctr
+docx2txt
