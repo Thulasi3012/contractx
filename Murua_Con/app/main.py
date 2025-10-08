@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.database import database, models
-from app.routes import CURD_operation,generate_summary,Thulasi_AI
+from app.routes import CURD_operation,generate_summary,Thulasi_AI,Document_parser
 import logging
 
 # Initialize FastAPI app
@@ -21,3 +21,4 @@ app.include_router(generate_summary.router)
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=1177, reload=True)
+
