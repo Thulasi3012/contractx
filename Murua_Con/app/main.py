@@ -16,9 +16,11 @@ models.Base.metadata.create_all(bind=database.engine)
 app.include_router(Thulasi_AI.router)
 app.include_router(CURD_operation.router)
 app.include_router(generate_summary.router)
+app.include_router(Document_parser.router)
 
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=1177, reload=True)
+
 
