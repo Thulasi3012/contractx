@@ -1,287 +1,314 @@
-#!/usr/bin/env python3
 """
-Contract PDF Parser API (full pipeline)
-- Primary extractor: Doctr OCR (ocr_predictor pretrained)
-- Fallback extractor: pdfplumber
-- Classification into JSON schema: schedule_name -> sections -> clauses
-- Handles multi-level numbering (1, 1.1, 1.1.1...), bullets, tables, appendices
-- Normalizes section names (strips leading numbering)
-- Detailed step-by-step logging returned with the response
-- FastAPI app; run with: uvicorn app:app --reload
+Main API Server
+Complete integration with Text, Table, and Image Agents
 """
 
-import os
-import re
-import json
-import logging
-import tempfile
-from typing import List, Dict, Any
-
-import pdfplumber
-from fastapi import FastAPI, UploadFile, File, HTTPException,APIRouter
+from fastapi import FastAPI, File, UploadFile, HTTPException,APIRouter
 from fastapi.responses import JSONResponse
-from doctr.models import ocr_predictor
-from doctr.io import DocumentFile
+import fitz  # PyMuPDF
+import os
+import tempfile
+import time
+from typing import Dict, Any, List
+from dataclasses import asdict
 
-# ---------------------
-# Logging config
-# ---------------------
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s"
+# Import agents (these should be in separate files)
+from app.service.text_agent import TextAgent, TextContent
+from app.service.table_agent import TableAgent, TableContent
+from app.service.image_agent import ImageAgent, ImageContent
+
+
+app = FastAPI(
+    title="Document Analysis API",
+    description="AI For Analyzing Documents With NNX Docuement Intelligence",
+    version="1.0.0"
 )
-logger = logging.getLogger("contract_parser")
 
-# ---------------------
-# FastAPI app
-# ---------------------
-app = FastAPI(title="Contract PDF Parser API (Doctr primary, pdfplumber fallback)")
-router = APIRouter(prefix="/Document_praser", tags=["process document"]) 
-# ---------------------
-# Load Doctr model once at startup
-# ---------------------
-logger.info("Loading Doctr OCR model (ocr_predictor pretrained). This may take a moment...")
-try:
-    doctr_model = ocr_predictor(pretrained=True)
-    logger.info("Doctr OCR model loaded successfully.")
-except Exception as e:
-    # If model load fails at startup, keep reference None and attempt on-demand;
-    # but we still report the failure in logs and to client if used.
-    doctr_model = None
-    logger.error(f"Failed to load Doctr model at startup: {e}")
+router = APIRouter(prefix="/Document_parser", tags=["Document Parser"])
 
-
-# ---------------------
-# Helper: record a log step (keeps logs to return to client)
-# ---------------------
-def _log_step(logs: List[str], level: str, message: str) -> None:
-    ts = f"{logging.Formatter().formatTime(logging.LogRecord('', '', '', '', '', None, None))}"
-    entry = f"{level.upper()} | {message}"
-    logs.append(entry)
-    if level.lower() == "info":
-        logger.info(message)
-    elif level.lower() == "warning":
-        logger.warning(message)
-    elif level.lower() == "error":
-        logger.error(message)
-    else:
-        logger.debug(message)
-
-
-# ---------------------
-# Extraction functions
-# ---------------------
-def extract_with_doctr(pdf_path: str, logs: List[str]) -> str:
-    """Try to extract text using Doctr OCR (primary). Returns extracted text (possibly empty)."""
-    if doctr_model is None:
-        _log_step(logs, "warning", "Doctr model not loaded (None). Skipping Doctr extraction.")
-        return ""
-    try:
-        _log_step(logs, "info", "Starting extraction with Doctr OCR (primary).")
-        doc = DocumentFile.from_pdf(pdf_path)
-        result = doctr_model(doc)  # performs OCR
-        text = result.render()  # get plain text string
-        if text and text.strip():
-            _log_step(logs, "info", "Doctr OCR extraction succeeded and returned non-empty text.")
-        else:
-            _log_step(logs, "warning", "Doctr OCR extraction returned empty text.")
-        return text or ""
-    except Exception as e:
-        _log_step(logs, "error", f"Doctr OCR extraction failed with exception: {e}")
-        return ""
-
-
-def extract_with_pdfplumber(pdf_path: str, logs: List[str]) -> str:
-    """Fallback extraction using pdfplumber. Returns extracted text (possibly empty)."""
-    _log_step(logs, "info", "Starting fallback extraction with pdfplumber.")
-    text_parts: List[str] = []
-    try:
-        with pdfplumber.open(pdf_path) as pdf:
-            for pageno, page in enumerate(pdf.pages, start=1):
-                page_text = page.extract_text() or ""
-                text_parts.append(page_text)
-                _log_step(logs, "info", f"pdfplumber: extracted page {pageno} (length {len(page_text)}).")
-        joined = "\n".join(text_parts)
-        if joined.strip():
-            _log_step(logs, "info", "pdfplumber extraction completed and returned non-empty text.")
-        else:
-            _log_step(logs, "warning", "pdfplumber extraction returned empty text.")
-        return joined
-    except Exception as e:
-        _log_step(logs, "error", f"pdfplumber extraction failed with exception: {e}")
-        return ""
-
-
-# ---------------------
-# Classification / parsing
-# ---------------------
-def normalize_section_name(section_line: str) -> str:
-    """Keep numbering in the section header, just normalize spaces/punctuation"""
-    return section_line.strip()
-
-def classify_text_to_json(text: str, schedule_name: str, logs: List[str]) -> Dict[str, Any]:
+class HeartLLM:
     """
-    Converts extracted text into the JSON schema:
-      { "schedule_name": str,
-        "sections": [ { "section_name": str, "clauses": [ { "clause_id": str, "content": str } ] } ]
-      }
-    Handles multi-level numbering, bullets, tables, appendices.
+    Core orchestrator that manages the document processing workflow.
+    Coordinates Text, Table, and Image agents.
     """
-    _log_step(logs, "info", "Starting classification of extracted text into JSON structure.")
-
-    output = {"schedule_name": schedule_name, "sections": []}
-
-    current_section = None
-    current_clauses: List[Dict[str, str]] = []
-
-    # Pre-split lines and normalize whitespace
-    lines = [ln.strip() for ln in text.splitlines()]
-
-    # Useful regexes
-    section_re = re.compile(r"^\d+\.\s+")              # e.g., "1. "
-    clause_re = re.compile(r"^\d+(?:\.\d+)+")         # e.g., "1.1" or "3.2.1"
-    bullet_re = re.compile(r"^[-•\u2022]\s+")         # hyphen or bullet char
-    appendix_re = re.compile(r"\b(Appendix|Appendices|Table|Annex)\b", re.IGNORECASE)
-
-    for idx, line in enumerate(lines):
-        if not line:
-            continue
-
-        # Detect a Section heading like "1. Glossary" or "10. APPLICATIONS"
-        if section_re.match(line):
-            _log_step(logs, "info", f"Detected SECTION line (idx={idx}): '{line[:80]}'")
-            # push previous section
-            if current_section is not None:
-                output["sections"].append({
-                    "section_name": normalize_section_name(current_section),
-                    "clauses": current_clauses
-                })
-            current_section = line
-            current_clauses = []
-            continue
-
-        # Detect a clause with multi-level numbering e.g., "3.1", "3.2.1"
-        m_clause = clause_re.match(line)
-        if m_clause:
-            clause_id = m_clause.group(0)
-            content = line[len(clause_id):].strip(" .:-—–")  # remove trailing punctuation
-            _log_step(logs, "info", f"Detected CLAUSE '{clause_id}' (idx={idx})")
-            current_clauses.append({"clause_id": clause_id, "content": content})
-            continue
-
-        # Detect bullet points
-        if bullet_re.match(line):
-            _log_step(logs, "info", f"Detected BULLET (idx={idx})")
-            if current_clauses:
-                # append bullet text into last clause content, mark as newline bullet
-                current_clauses[-1]["content"] += "\n" + line
-            else:
-                # if no clause exists, create an anonymous bullet clause
-                current_clauses.append({"clause_id": "bullet", "content": line})
-            continue
-
-        # Detect Table / Appendix mentions - add as note clause
-        if appendix_re.search(line):
-            _log_step(logs, "info", f"Detected APPENDIX/TABLE mention (idx={idx})")
-            current_clauses.append({"clause_id": "note", "content": line})
-            continue
-
-        # Otherwise treat as continuation of previous clause content (if any)
-        if current_clauses:
-            current_clauses[-1]["content"] += " " + line
-        else:
-            # If we have no section recognized yet, treat this as a top-level unnamed section
-            if current_section is None:
-                current_section = "1. Untitled Section"
-                current_clauses = []
-                _log_step(logs, "warning", "No section header detected yet — creating 'Untitled Section' to hold content.")
-            current_clauses.append({"clause_id": "p", "content": line})
-
-    # push last section if exists
-    if current_section is not None:
-        output["sections"].append({
-            "section_name": normalize_section_name(current_section),
-            "clauses": current_clauses
-        })
-
-    _log_step(logs, "info", "Classification complete.")
-    return output
-
-
-# ---------------------
-# API endpoint
-# ---------------------
-@router.post("/parse-pdf_thulasi/")
-async def parse_pdf(file: UploadFile = File(...)):
-    """
-    Parse uploaded PDF and return:
-      {
-        "processing_log": [ ... ],
-        "used_model": "doctr" | "pdfplumber" | "none",
-        "structured_json": { ... }
-      }
-    """
-    processing_logs: List[str] = []
-    _log_step(processing_logs, "info", f"Received upload: {file.filename}")
-
-    if not file.filename.lower().endswith(".pdf"):
-        _log_step(processing_logs, "error", "Uploaded file is not a PDF.")
-        raise HTTPException(status_code=400, detail="Only PDF files are supported.")
-
-    # Save to a secure temp file
-    try:
-        tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
-        tmp_path = tmp.name
-        contents = await file.read()
-        tmp.write(contents)
-        tmp.flush()
-        tmp.close()
-        _log_step(processing_logs, "info", f"Saved uploaded PDF to temporary path: {tmp_path}")
-    except Exception as e:
-        _log_step(processing_logs, "error", f"Failed to save uploaded file: {e}")
-        raise HTTPException(status_code=500, detail="Failed to save uploaded file.")
-
-    used_model = "none"
-    extracted_text = ""
-
-    # 1) Try Doctr first
-    extracted_text = extract_with_doctr(tmp_path, processing_logs)
-    if extracted_text and extracted_text.strip():
-        used_model = "doctr"
-    else:
-        # 2) Fallback to pdfplumber
-        _log_step(processing_logs, "info", "Doctr produced no usable text; falling back to pdfplumber.")
-        extracted_text = extract_with_pdfplumber(tmp_path, processing_logs)
-        if extracted_text and extracted_text.strip():
-            used_model = "pdfplumber"
-        else:
-            used_model = "none"
-
-    if used_model == "none":
-        _log_step(processing_logs, "error", "Both Doctr and pdfplumber failed to extract text.")
-        # clean up temp file before raising
+    
+    def __init__(self, gemini_api_key: str):
+        """
+        Initialize Heart LLM with all agents.
+        
+        Args:
+            gemini_api_key: Google Gemini API key for LLM-based agents
+        """
+        self.text_agent = TextAgent(api_key=gemini_api_key)
+        self.table_agent = TableAgent(api_key=gemini_api_key)
+        self.image_agent = ImageAgent()
+        
+    def process_page(self, page: fitz.Page, page_number: int) -> Dict[str, Any]:
+        """
+        Process a single page through all three agents.
+        
+        Args:
+            page: PyMuPDF Page object
+            page_number: Page number (1-indexed)
+        
+        Returns:
+            Combined dictionary with all agent outputs
+        """
+        print(f"\n📄 Processing Page {page_number}...")
+        
+        # Send page to Text Agent
+        print(f"  → Text Agent processing...")
+        text_result = self.text_agent.process_page(page, page_number)
+        
+        # Send page to Table Agent
+        print(f"  → Table Agent processing...")
+        table_result = self.table_agent.process_page(page, page_number)
+        
+        # Send page to Image Agent
+        print(f"  → Image Agent processing...")
+        image_result = self.image_agent.process_page(page, page_number)
+        
+        # Combine all agent outputs for this page
+        page_data = {
+            "page": page_number,
+            "text": asdict(text_result),
+            "tables": asdict(table_result),
+            "images": asdict(image_result)
+        }
+        
+        print(f"  ✓ Page {page_number} completed")
+        return page_data
+    
+    def process_document(self, pdf_path: str, document_type: str = "Unknown") -> Dict[str, Any]:
+        """
+        Main processing pipeline for the entire document.
+        
+        Args:
+            pdf_path: Path to PDF file
+            document_type: Type of document
+        
+        Returns:
+            Complete structured JSON with all pages and agent outputs
+        """
+        print("=" * 70)
+        print("🫀 NNX Agent - Document Processing Started")
+        print("=" * 70)
+        
+        start_time = time.time()
+        
+        # Step 1: Load PDF document
         try:
-            os.remove(tmp_path)
-        except Exception:
-            pass
-        raise HTTPException(status_code=500, detail="Failed to extract text from PDF using both Doctr and pdfplumber.")
+            doc = fitz.open(pdf_path)
+            document_name = os.path.basename(pdf_path)
+            total_pages = len(doc)
+            print(f"✓ Loaded: {document_name}")
+            print(f"✓ Total Pages: {total_pages}")
+        except Exception as e:
+            raise Exception(f"Failed to load PDF: {str(e)}")
+        
+        # Step 2: Process each page through all agents
+        all_pages_data = []
+        
+        for page_num in range(total_pages):
+            page = doc[page_num]
+            
+            # Process page through all agents
+            page_data = self.process_page(page, page_num + 1)
+            all_pages_data.append(page_data)
+            
+            # Small delay to avoid API rate limits
+            if page_num < total_pages - 1:
+                time.sleep(0.5)
+        
+        doc.close()
+        
+        # Step 3: Create final combined output
+        processing_time = round(time.time() - start_time, 2)
+        
+        final_output = {
+            "document_metadata": {
+                "document_name": document_name,
+                "document_type": document_type,
+                "total_pages": total_pages,
+                "processing_time_seconds": processing_time,
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+            },
+            "pages": all_pages_data,
+            "summary": {
+                "total_text_extracted": sum(
+                    1 for p in all_pages_data 
+                    if p["text"]["status"] == "success"
+                ),
+                "total_tables_found": sum(
+                    p["tables"]["table_count"] for p in all_pages_data
+                ),
+                "total_images_found": sum(
+                    p["images"]["image_count"] for p in all_pages_data
+                )
+            }
+        }
+        
+        print("\n" + "=" * 70)
+        print("✅ NNX Agent - Processing Complete")
+        print(f"⏱️  Time: {processing_time}s")
+        print(f"📊 Pages: {total_pages} | Tables: {final_output['summary']['total_tables_found']} | Images: {final_output['summary']['total_images_found']}")
+        print("=" * 70)
+        
+        return final_output
 
-    _log_step(processing_logs, "info", f"Text extraction used: {used_model}")
+# Global Heart LLM instance (initialized on startup)
+heart_llm = None
 
-    # Classify the extracted text
-    structured = classify_text_to_json(extracted_text, schedule_name=file.filename, logs=processing_logs)
+@router.on_event("startup")
+async def startup_event():
+    """Initialize Heart LLM on server startup"""
+    global heart_llm
+    
+    # Get API key from environment variable
+    gemini_api_key = "AIzaSyBR-j_7vbLMCvE4yo4vqLqaLPWYKecqPuY"
+    
+    if not gemini_api_key:
+        print("⚠️  WARNING: GEMINI_API_KEY not set in environment variables!")
+        print("   Set it with: export GEMINI_API_KEY='your-api-key'")
+    else:
+        heart_llm = HeartLLM(gemini_api_key=gemini_api_key)
+        print("✅ NNX Agent initialized successfully")
 
-    # Cleanup temp
-    try:
-        os.remove(tmp_path)
-        _log_step(processing_logs, "info", f"Removed temporary file: {tmp_path}")
-    except Exception as e:
-        _log_step(processing_logs, "warning", f"Failed to remove temp file: {e}")
 
-    # Return both the structured JSON and the logs so user can audit steps
-    response = {
-        "processing_log": processing_logs,
-        "used_model": used_model,
-        "structured_json": structured
+@router.get("/")
+async def root():
+    """Health check endpoint"""
+    return {
+        "message": "NNX Agent API is running",
+        "version": "1.0.0",
+        "status": "active" if heart_llm else "not initialized"
     }
-    return JSONResponse(content=response)
+
+
+@router.post("/process-pdf")
+async def process_pdf(
+    file: UploadFile = File(...),
+    document_type: str = "Unknown"
+):
+    """
+    Main endpoint to process PDF files.
+    
+    Args:
+        file: PDF file uploaded by user
+        document_type: Type of document (optional)
+    
+    Returns:
+        Complete JSON with all pages processed by all agents
+    """
+    # Check if Heart LLM is initialized
+    if not heart_llm:
+        raise HTTPException(
+            status_code=500,
+            detail="Heart LLM not initialized. Please set GEMINI_API_KEY environment variable."
+        )
+    
+    # Validate file type
+    if not file.filename.endswith('.pdf'):
+        raise HTTPException(
+            status_code=400,
+            detail="Only PDF files are supported"
+        )
+    
+    # Create temporary file to save uploaded PDF
+    temp_dir = tempfile.gettempdir()
+    temp_pdf_path = os.path.join(temp_dir, f"upload_{int(time.time())}_{file.filename}")
+    
+    try:
+        # Save uploaded file
+        with open(temp_pdf_path, "wb") as f:
+            content = await file.read()
+            f.write(content)
+        
+        print(f"\n📤 Received file: {file.filename} ({len(content)} bytes)")
+        
+        # Process document through Heart LLM
+        result = heart_llm.process_document(temp_pdf_path, document_type)
+        
+        return JSONResponse(content=result)
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error processing PDF: {str(e)}"
+        )
+    
+    finally:
+        # Cleanup temporary file
+        if os.path.exists(temp_pdf_path):
+            os.remove(temp_pdf_path)
+            print(f"🧹 Cleaned up temporary file")
+
+
+@router.post("/process-pdf-url")
+async def process_pdf_url(
+    pdf_url: str,
+    document_type: str = "Unknown"
+):
+    """
+    Process PDF from URL.
+    
+    Args:
+        pdf_url: URL to PDF file
+        document_type: Type of document (optional)
+    
+    Returns:
+        Complete JSON with all pages processed
+    """
+    if not heart_llm:
+        raise HTTPException(
+            status_code=500,
+            detail="Heart LLM not initialized. Please set GEMINI_API_KEY."
+        )
+    
+    try:
+        import requests
+        
+        # Download PDF
+        response = requests.get(pdf_url)
+        response.raise_for_status()
+        
+        # Save to temporary file
+        temp_dir = tempfile.gettempdir()
+        temp_pdf_path = os.path.join(temp_dir, f"url_download_{int(time.time())}.pdf")
+        
+        with open(temp_pdf_path, "wb") as f:
+            f.write(response.content)
+        
+        # Process document
+        result = heart_llm.process_document(temp_pdf_path, document_type)
+        
+        # Cleanup
+        os.remove(temp_pdf_path)
+        
+        return JSONResponse(content=result)
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error processing PDF URL: {str(e)}"
+        )
+
+
+@router.get("/health")
+async def health_check():
+    """Detailed health check"""
+    return {
+        "status": "healthy",
+        "heart_llm_initialized": heart_llm is not None,
+        "agents": {
+            "text_agent": "active" if heart_llm else "inactive",
+            "table_agent": "active" if heart_llm else "inactive",
+            "image_agent": "active" if heart_llm else "inactive"
+        }
+    }
+
+
+# Run with: uvicorn main:app --reload --host 0.0.0.0 --port 8000
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

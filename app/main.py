@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.database import database, models
-from app.routes import CURD_operation,document_praser,document_praser1,generate_summary
+from app.routes import Document_praser
 import logging
 
 # Initialize FastAPI app
@@ -13,11 +13,7 @@ app = FastAPI(
 models.Base.metadata.create_all(bind=database.engine)
 
 # Register routers
-app.include_router(document_praser.router)
-app.include_router(document_praser1.router)
-app.include_router(CURD_operation.router)
-app.include_router(generate_summary.router)
-
+app.include_router(Document_praser.router)
 
 if __name__ == "__main__":
     import uvicorn
