@@ -5,7 +5,6 @@ Features:
 - Microsoft Table Transformer (DETR-based) for table detection
 - Image detection via PyMuPDF (only call ImageAgent when images exist)
 - Comprehensive logging for all operations
-- Removed JSON Formatter Agent as per requirements
 """
 from fastapi import FastAPI, File, UploadFile, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
