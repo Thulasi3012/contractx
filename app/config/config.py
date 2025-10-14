@@ -82,3 +82,4 @@ if settings.ENVIRONMENT.lower() != "production":
     print(f"✅ Database URL: {settings.DATABASE_URL}")
     print(f"✅ Upload folder: {settings.UPLOAD_FOLDER}")
     print(f"✅ Output folder: {settings.OUTPUT_FOLDER}")
+    print(f"gemini_api_key: {settings.GEMINI_API_KEY[:4]}...{settings.GEMINI_API_KEY[-4:]}")
