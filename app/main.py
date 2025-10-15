@@ -16,5 +16,23 @@ models.Base.metadata.create_all(bind=database.engine)
 app.include_router(Document_praser.router)
 
 if __name__ == "__main__":
+    import logging
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=1177, reload=True)
+
+    # --- Patch logging before uvicorn starts ---
+    logging.basicConfig(level=logging.INFO, force=True)
+    for handler in logging.root.handlers:
+        try:
+            handler.stream = open(1, "w", encoding="utf-8", closefd=False)  # reset to stdout
+        except Exception:
+            pass
+
+    # --- Run the app without the reload subprocess ---
+    uvicorn.run(
+        "main:app",             # change to your module path
+        host="0.0.0.0",
+        port=8000,
+        reload=False,           # avoid multiprocessing reload
+        log_config=None,        # prevent uvicorn from overriding logging
+    )
+
