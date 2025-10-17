@@ -71,4 +71,28 @@ IMAGE_DPI=250
 ### 4. Run the Server
 
 ```bash
-uvicorn main:app --reload
+uvicorn main:app --reload 
+
+Step 3: Include the router in your FastAPI app
+Add this line after creating your FastAPI app instance (after the app = FastAPI(...) line):
+python# Include the retrieval router
+app.include_router(retrieval_router)
+📡 Available Endpoints
+Single Document Endpoints
+All these endpoints support lookup by ID or UUID:
+EndpointMethodDescription/api/documents/{id_or_uuid}/buyerGETGet buyer name/api/documents/{id_or_uuid}/sellerGETGet seller name/api/documents/{id_or_uuid}/deadlinesGETGet all deadlines/api/documents/{id_or_uuid}/obligationsGETGet all obligations/api/documents/{id_or_uuid}/alertsGETGet all alerts/api/documents/{id_or_uuid}/summaryGETGet document summary/api/documents/{id_or_uuid}/cleaned-textGETGet cleaned text/api/documents/{id_or_uuid}/partiesGETGet buyer & seller/api/documents/{id_or_uuid}/key-infoGETGet all key info (consolidated)/api/documents/{id_or_uuid}/metadataGETGet processing metadata
+Batch Retrieval Endpoints
+EndpointMethodDescription/api/documents/batch/deadlinesGETGet deadlines from multiple docs/api/documents/batch/obligationsGETGet obligations from multiple docs/api/documents/batch/alertsGETGet alerts from multiple docs
+Query Parameters:
+
+skip: Pagination offset (default: 0)
+limit: Maximum results (default: 10, max: 100)
+document_type: Filter by document type (optional)
+
+Search Endpoints
+EndpointMethodDescription/api/documents/search/by-buyerGETSearch by buyer name/api/documents/search/by-sellerGETSearch by seller name
+Query Parameters:
+
+buyer_name or seller_name: Search term (required)
+skip: Pagination offset
+limit: Maximum results

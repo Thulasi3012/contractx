@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.database import database, models
-from app.routes import Document_praser
+from app.routes import document_praser,document_praser1,document_retrieval
 import logging
 
 # Initialize FastAPI app
@@ -13,7 +13,9 @@ app = FastAPI(
 models.Base.metadata.create_all(bind=database.engine)
 
 # Register routers
-app.include_router(Document_praser.router)
+# app.include_router(document_praser.router)
+app.include_router(document_praser1.router)
+app.include_router(document_retrieval.router)
 
 if __name__ == "__main__":
     import logging
@@ -35,4 +37,3 @@ if __name__ == "__main__":
         reload=False,           # avoid multiprocessing reload
         log_config=None,        # prevent uvicorn from overriding logging
     )
-

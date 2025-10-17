@@ -2,47 +2,30 @@ from sqlalchemy import Column, Integer, String, JSON, TIMESTAMP,Text,DateTime,te
 from datetime import datetime
 from app.database.database import Base
 from app.database.database import engine
-
-class Template(Base):
-    __tablename__ = "templates"
-
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    template_type = Column(String, nullable=False)
-    sector = Column(String, nullable=False)
-    keywords = Column(JSON, nullable=False)
-    created_on = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"))
-    updated_on = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"), onupdate=datetime.utcnow)
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
 
 class Document(Base):
-    """Enhanced Document model with comprehensive fields"""
+    """Database model for storing processed documents"""
     __tablename__ = "documents"
-    
-    id = Column(String(36), primary_key=True, index=True)
-    document_name = Column(String(255), nullable=False)
-    uploaded_on = Column(DateTime, default=datetime.utcnow, nullable=False)
-    
-    # Analysis fields
-    summary = Column(Text, nullable=True)
-    document_type = Column(String(100), nullable=True)
-    document_version = Column(String(50), nullable=True)
-    
-    # Parties information
+
+    id = Column(Integer, autoincrement=True, primary_key=True, index=True)
+    document_uuid = Column(String(36), unique=True, default=lambda: str(uuid.uuid4()), nullable=False)
+    document_name = Column(String(255), nullable=False, index=True)
+    document_type = Column(String(100), nullable=True, index=True)
     buyer = Column(String(500), nullable=True)
     seller = Column(String(500), nullable=True)
-    parties_json = Column(JSON, nullable=True)  # All parties involved
-    
-    # Critical information
-    deadlines = Column(JSON, nullable=True)  # List of deadlines
-    alerts = Column(JSON, nullable=True)  # Critical alerts
-    obligations = Column(JSON, nullable=True)  # Party obligations
-    
-    # Text data
-    cleaned_text = Column(Text, nullable=False)
-    text_as_json = Column(JSON, nullable=False)
-    
-    # Metadata
+    summary = Column(Text, nullable=True)
+    deadlines = Column(JSON, nullable=True)
+    obligations = Column(JSON, nullable=True)
+    alerts = Column(JSON, nullable=True)
+    cleaned_text = Column(Text, nullable=True)
+    text_as_json = Column(JSON, nullable=True)
     page_count = Column(Integer, nullable=True)
-    extraction_method = Column(String(50), nullable=True)
+    extraction_method = Column(String(100), nullable=True)
+    processing_time_seconds = Column(Integer, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 # Create tables
 Base.metadata.create_all(bind=engine)

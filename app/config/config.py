@@ -16,7 +16,7 @@ class AppSettings(BaseSettings):
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "Development")
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "info")
     API_PREFIX: str = os.getenv("API_PREFIX", "/api")
-
+    WAPI_DELAY: float = 0.5
     # ============================================================
     # 🧠 Gemini / AI Agent Settings
     # ============================================================
