@@ -190,20 +190,21 @@ class GeminiProvider:
         self.has_file_api = hasattr(genai, 'upload_file')
         
         if self.has_file_api:
-            logger.info(f"GeminiProvider initialized | Model: {model_name} | File API: Available")
+            logger.info(f"GeminiProvider initialized | Model: {model_name} | File API: Available (Vision Mode)")
         else:
-            logger.warning(f"GeminiProvider initialized | Model: {model_name} | File API: Not available (using text extraction)")
+            logger.warning(f"GeminiProvider initialized | Model: {model_name} | File API: Not available (Text-only Mode)")
 
     async def process_full_extraction(self, chunk: DocumentChunk, chunk_pdf_path: str) -> Dict:
         chunk_id = chunk.metadata.chunk_id
         page_range = chunk.metadata.page_range
-        logger.info(f"Extracting {chunk_id} | Pages: {page_range[0]}-{page_range[1]}")
+        logger.info(f"Extracting {chunk_id} | Pages: {page_range[0]}-{page_range[1]} | Mode: {'Vision' if self.has_file_api else 'Text-only'}")
         
         try:
-            # METHOD 1: Try using File API if available
+            # METHOD 1: Try using File API if available (BEST - includes visual detection)
             if self.has_file_api:
                 try:
                     uploaded_file = genai.upload_file(chunk_pdf_path)
+                    logger.info(f"{chunk_id}: Using File API (Vision Mode) - Full visual element detection")
                     result = await self._extract_with_file_api(uploaded_file, page_range, chunk_id)
                     
                     # Clean up uploaded file
@@ -216,7 +217,8 @@ class GeminiProvider:
                 except Exception as e:
                     logger.warning(f"File API failed for {chunk_id}: {e}. Falling back to text extraction")
             
-            # METHOD 2: Fallback - Extract text from PDF and process
+            # METHOD 2: Fallback - Extract text from PDF and process (LIMITED visual detection)
+            logger.warning(f"{chunk_id}: Using Text-only Mode - Visual elements may be incomplete")
             return await self._extract_with_text(chunk_pdf_path, page_range, chunk_id)
             
         except Exception as e:
@@ -224,7 +226,7 @@ class GeminiProvider:
             return {"pages": [], "confidence": 0.0, "issues": [str(e)]}
 
     async def _extract_with_file_api(self, uploaded_file, page_range: tuple, chunk_id: str) -> Dict:
-        """Extract using Gemini File API"""
+        """Extract using Gemini File API with FULL visual element detection"""
         prompt = self._create_extraction_prompt(page_range)
         
         start_time = time.time()
@@ -235,12 +237,12 @@ class GeminiProvider:
         
         elapsed = time.time() - start_time
         txt = response.text.strip()
-        logger.debug(f"Response in {elapsed:.2f}s | Length: {len(txt)} chars")
+        logger.debug(f"Vision extraction in {elapsed:.2f}s | Length: {len(txt)} chars")
         
         return self._parse_extraction_response(txt, page_range, chunk_id)
 
     async def _extract_with_text(self, chunk_pdf_path: str, page_range: tuple, chunk_id: str) -> Dict:
-        """Extract using text-based approach (fallback method)"""
+        """Extract using text-based approach (fallback method) - LIMITED visual detection"""
         try:
             # Extract text from PDF pages
             reader = PyPDF2.PdfReader(chunk_pdf_path)
@@ -249,57 +251,88 @@ class GeminiProvider:
             for i, page in enumerate(reader.pages):
                 page_num = page_range[0] + i
                 text = page.extract_text()
+                
+                # Try to detect tables from text patterns
+                has_table_indicators = any([
+                    '\t' in text,  # Tab-separated data
+                    '|' in text,   # Pipe-separated data
+                    re.search(r'\n\s*[\w\s]+\s+[\w\s]+\s+[\w\s]+\s*\n', text),  # Multiple columns
+                ])
+                
                 extracted_text.append({
                     "page_number": page_num,
-                    "text": text
+                    "text": text,
+                    "has_table_indicators": has_table_indicators
                 })
             
-            # Create prompt with extracted text
-            prompt = f"""Analyze this document text and extract structured information.
+            # Create enhanced prompt
+            prompt = f"""⚠️ TEXT-ONLY MODE: Analyze this text-extracted document content.
 
 PAGES: {page_range[0]} to {page_range[1]}
 
 TEXT CONTENT:
-{json.dumps(extracted_text, indent=2)}
+{json.dumps(extracted_text, indent=2)[:15000]}
 
-Extract the following for EACH page:
+🔍 EXTRACTION REQUIREMENTS:
+
+1. **TEXT EXTRACTION**
+   - Extract all text content
+   - Identify section headings and clauses
+   - Preserve structure and numbering
+
+2. **TABLE DETECTION** (from text patterns)
+   - Look for aligned columns in text
+   - Look for tab-separated or pipe-separated data
+   - Look for repeated row patterns
+   - Extract as structured table if found
+   
+3. **VISUAL ELEMENT INDICATORS**
+   - Look for text like "Figure 1:", "Table 1:", "Chart:", "Diagram:"
+   - Look for "[IMAGE]", "[LOGO]", "[CHART]" placeholders
+   - Note any references to visual elements
+
+EXPECTED OUTPUT:
 
 {{
   "pages": [
     {{
       "page_number": {page_range[0]},
+      "has_tables": true/false,
+      "has_visual_references": true/false,
       "sections": [
         {{
-          "section_name": "Section heading from document",
+          "section_name": "Section heading",
           "clauses": [
             {{
               "clause_id": "1.1",
-              "content": "Full clause text",
-              "sub_clauses": [
+              "content": "Full text",
+              "tables": [
                 {{
-                  "clause_id": "1.1.1",
-                  "content": "Sub-clause text"
+                  "table_id": "T1",
+                  "table_title": "Title if found",
+                  "headers": ["Col1", "Col2"],
+                  "rows": [["val1", "val2"]],
+                  "note": "Extracted from text alignment"
                 }}
               ],
-              "tables": [],
-              "images": []
+              "visual_references": [
+                {{
+                  "type": "image/chart/table",
+                  "reference": "See Figure 1 or Table 1",
+                  "note": "Visual element mentioned but not visible in text"
+                }}
+              ]
             }}
           ]
         }}
       ]
     }}
   ],
-  "confidence": 0.85,
-  "issues": []
+  "confidence": 0.70,
+  "issues": ["Text-only extraction - visual elements may not be fully captured"]
 }}
 
-Instructions:
-- Create a page object for EVERY page from {page_range[0]} to {page_range[1]}
-- Extract ALL text content without truncation
-- Identify section headings (usually in CAPS or bold)
-- Extract numbered clauses (1.1, 1.2, (a), (b), etc.)
-- If a page has no clear structure, put all text in a single section
-- Preserve formatting and structure
+⚠️ NOTE: This is text-only mode. Extract what you can see in the text, but note that images, charts, and visual tables may not be fully captured.
 
 Return ONLY valid JSON."""
 
@@ -312,6 +345,7 @@ Return ONLY valid JSON."""
             elapsed = time.time() - start_time
             txt = response.text.strip()
             logger.debug(f"Text-based extraction in {elapsed:.2f}s | Length: {len(txt)} chars")
+            logger.warning(f"{chunk_id}: Using text-only mode - visual elements may be incomplete")
             
             return self._parse_extraction_response(txt, page_range, chunk_id)
             
@@ -320,29 +354,86 @@ Return ONLY valid JSON."""
             return {"pages": [], "confidence": 0.0, "issues": [f"Text extraction failed: {str(e)}"]}
 
     def _create_extraction_prompt(self, page_range: tuple) -> str:
-        """Create extraction prompt"""
-        return f"""Extract complete information from pages {page_range[0]} to {page_range[1]} of this PDF.
+        """Create comprehensive extraction prompt with FULL visual element detection"""
+        return f"""🔍 COMPREHENSIVE DOCUMENT ANALYSIS - Pages {page_range[0]} to {page_range[1]}
 
-CRITICAL REQUIREMENTS:
-1. Extract EVERY page in range ({page_range[0]} to {page_range[1]})
-2. Extract COMPLETE text - NO truncation
-3. Preserve ALL formatting and structure
-4. Extract ALL tables with complete data
-5. Identify all images and visual elements
+CRITICAL MISSION:
+You are analyzing a PDF document with FULL VISUAL ACCESS. You must extract EVERYTHING - text, tables, images, charts, barcodes, and all visual elements with complete accuracy.
 
-Return JSON with this structure:
+📋 EXTRACTION REQUIREMENTS:
+
+1️⃣ **TEXT EXTRACTION**
+   - Extract EVERY word on each page
+   - Preserve formatting (bold, italic, underline)
+   - Identify headings vs body text
+   - Capture numbered/bulleted lists
+   - Note any handwritten text or annotations
+
+2️⃣ **TABLE DETECTION & EXTRACTION** ⚠️ CRITICAL
+   - Scan EVERY page for tables (even small ones)
+   - For EACH table found:
+     * Identify table boundaries
+     * Extract column headers (first row typically)
+     * Extract ALL rows with exact values
+     * Note merged cells or special formatting
+     * Preserve data types (numbers, dates, text)
+     * Include table title/caption if present
+   - Common table indicators: grid lines, aligned columns, repeated headers
+
+3️⃣ **IMAGE ANALYSIS**
+   - Detect ALL images, photos, diagrams, illustrations
+   - For each image provide:
+     * Detailed description (what's shown)
+     * Image type (photo, diagram, illustration, logo, icon)
+     * Location on page (top, middle, bottom, left, right)
+     * Size indication (small, medium, large, full-page)
+     * Any text within the image (OCR)
+     * Color scheme (color, grayscale, black & white)
+
+4️⃣ **CHART & GRAPH DETECTION**
+   - Identify: pie charts, bar charts, line graphs, scatter plots, flowcharts
+   - For each chart extract:
+     * Chart type
+     * Title/label
+     * Axis labels (x and y)
+     * Data values/legend
+     * Key insights visible in the chart
+     * Colors used
+
+5️⃣ **SPECIAL VISUAL ELEMENTS**
+   - Barcodes (1D barcodes, UPC, EAN)
+   - QR codes
+   - Stamps or seals (official stamps, company seals)
+   - Signatures (handwritten or digital)
+   - Watermarks
+   - Logos and branding elements
+   - Vector graphics or icons
+
+6️⃣ **STRUCTURAL ELEMENTS**
+   - Headers and footers
+   - Page numbers
+   - Margin notes or sidebars
+   - Text boxes or callouts
+   - Colored backgrounds or highlighting
+
+🎯 OUTPUT FORMAT (JSON):
 
 {{
   "pages": [
     {{
       "page_number": {page_range[0]},
+      "has_tables": true,
+      "has_images": true,
+      "has_charts": false,
       "sections": [
         {{
           "section_name": "Exact heading from document",
+          "section_type": "heading/body/footer",
           "clauses": [
             {{
               "clause_id": "1.1",
-              "content": "COMPLETE clause text",
+              "content": "COMPLETE clause text with all formatting",
+              "formatting": ["bold", "italic"],
               "sub_clauses": [
                 {{
                   "clause_id": "1.1.1",
@@ -352,27 +443,92 @@ Return JSON with this structure:
               "tables": [
                 {{
                   "table_id": "T1",
-                  "description": "Table description",
-                  "headers": ["Col1", "Col2"],
-                  "rows": [["val1", "val2"]]
+                  "table_title": "Revenue Breakdown 2024",
+                  "position": "middle-center",
+                  "size": "medium",
+                  "headers": ["Quarter", "Revenue ($M)", "Growth %", "Notes"],
+                  "rows": [
+                    ["Q1 2024", "125.5", "15.2", "Strong performance"],
+                    ["Q2 2024", "142.8", "13.8", "New contracts"],
+                    ["Q3 2024", "156.2", "9.4", "Steady growth"]
+                  ],
+                  "total_rows": 3,
+                  "total_columns": 4,
+                  "has_merged_cells": false,
+                  "summary": "Quarterly revenue showing consistent growth"
                 }}
               ],
               "images": [
                 {{
                   "image_id": "IMG1",
-                  "description": "Image description",
-                  "type": "logo/diagram/chart"
+                  "type": "logo",
+                  "description": "Company logo showing blue eagle with text 'Acme Corp'",
+                  "position": "top-left",
+                  "size": "small",
+                  "contains_text": "Acme Corp",
+                  "color_scheme": "color",
+                  "purpose": "branding"
+                }},
+                {{
+                  "image_id": "IMG2",
+                  "type": "diagram",
+                  "description": "Network topology diagram showing servers, routers, and connections. Shows main server connected to 3 regional nodes with bidirectional arrows. Labels indicate bandwidth: 10Gbps main link, 1Gbps regional links.",
+                  "position": "middle-center",
+                  "size": "large",
+                  "contains_text": "Main Server, Node A, Node B, Node C, 10Gbps, 1Gbps",
+                  "color_scheme": "color",
+                  "purpose": "technical illustration"
+                }}
+              ],
+              "charts": [
+                {{
+                  "chart_id": "CHART1",
+                  "type": "pie_chart",
+                  "title": "Market Share Distribution",
+                  "description": "Pie chart showing market share: Company A 45%, Company B 30%, Company C 15%, Others 10%. Colors: blue, green, red, gray.",
+                  "position": "bottom-right",
+                  "data_values": {{"Company A": "45%", "Company B": "30%", "Company C": "15%", "Others": "10%"}},
+                  "legend": ["Company A", "Company B", "Company C", "Others"],
+                  "insights": "Company A leads with 45% market share"
+                }}
+              ],
+              "special_elements": [
+                {{
+                  "element_id": "BARCODE1",
+                  "type": "barcode",
+                  "format": "QR_code",
+                  "content": "URL or encoded data if readable",
+                  "position": "bottom-right",
+                  "purpose": "document tracking"
+                }},
+                {{
+                  "element_id": "STAMP1",
+                  "type": "stamp",
+                  "description": "Circular red stamp reading 'APPROVED' with date '2024-10-15'",
+                  "position": "bottom-center",
+                  "color": "red"
                 }}
               ]
             }}
           ]
         }}
-      ]
+      ],
+      "header": "Text in header area",
+      "footer": "Page 1 of 25 | Document ID: ABC123"
     }}
   ],
   "confidence": 0.95,
   "issues": []
 }}
+
+⚡ CRITICAL REMINDERS:
+- Create a page object for EVERY page from {page_range[0]} to {page_range[1]}
+- If you see a TABLE (rows and columns), you MUST extract it with headers and ALL rows
+- If you see an IMAGE, you MUST describe it in detail
+- If you see a CHART, you MUST identify its type and extract data
+- Do NOT skip any visual elements
+- Do NOT truncate table data
+- Do NOT summarize - extract COMPLETE content
 
 Include page objects for pages: {', '.join(str(p) for p in range(page_range[0], page_range[1] + 1))}"""
 
@@ -405,7 +561,28 @@ Include page objects for pages: {', '.join(str(p) for p in range(page_range[0], 
                 "issues": parsed.get("issues", [])
             }
             
-            logger.info(f"{chunk_id}: Extracted {len(result['pages'])} pages")
+            # Log visual element counts
+            total_tables = sum(
+                len(clause.get("tables", [])) 
+                for page in result["pages"] 
+                for section in page.get("sections", []) 
+                for clause in section.get("clauses", [])
+            )
+            total_images = sum(
+                len(clause.get("images", [])) 
+                for page in result["pages"] 
+                for section in page.get("sections", []) 
+                for clause in section.get("clauses", [])
+            )
+            total_charts = sum(
+                len(clause.get("charts", [])) 
+                for page in result["pages"] 
+                for section in page.get("sections", []) 
+                for clause in section.get("clauses", [])
+            )
+            
+            logger.info(f"{chunk_id}: Extracted {len(result['pages'])} pages | "
+                       f"Tables: {total_tables} | Images: {total_images} | Charts: {total_charts}")
             return result
             
         except json.JSONDecodeError as e:
@@ -727,7 +904,7 @@ class DocumentProcessingPipeline:
         self.chunker = DocumentChunker(chunk_size=chunk_size, overlap_pages=overlap_pages)
         self.processor = SequentialProcessor(gemini_provider)
         self.gemini = gemini_provider
-        logger.info("DocumentProcessingPipeline initialized (Sequential Mode)")
+        logger.info("DocumentProcessingPipeline initialized (Sequential Mode with Visual Detection)")
 
     async def process(self, document_path: str, document_name: str, total_pages: int) -> Dict[str, Any]:
         pipeline_start = time.time()
@@ -737,7 +914,7 @@ class DocumentProcessingPipeline:
         chunks = await self.chunker.create_chunks(document_path, total_pages, self.gemini.model)
         logger.info(f"Created {len(chunks)} chunks")
         
-        # Phase 2: Sequential Processing
+        # Phase 2: Sequential Processing with Visual Detection
         results = await self.processor.process_documents(chunks, document_path, total_pages)
         logger.info(f"Processed {len(results)} chunks")
         
@@ -754,7 +931,7 @@ class DocumentProcessingPipeline:
         for page in all_pages:
             for section in page.get("sections", []):
                 for clause in section.get("clauses", []):
-                    full_text += clause.get("content", "") + " "
+                    full_text += str(clause.get("content") or "") + " "
         
         # Detect parties from full text
         parties = await self.gemini.extract_parties_from_full_text(full_text[:8000])
@@ -777,7 +954,8 @@ class DocumentProcessingPipeline:
                 "total_pages": total_pages,
                 "pages_extracted": len(all_pages),
                 "processing_time_seconds": round(pipeline_elapsed, 2),
-                "processing_mode": "sequential",
+                "processing_mode": "sequential_with_vision",
+                "vision_mode_enabled": self.gemini.has_file_api,
                 "language": "English",
                 "total_obligations": total_obligations,
                 "total_deadlines": total_deadlines,
@@ -794,9 +972,9 @@ class DocumentProcessingPipeline:
 # ==================== FASTAPI APPLICATION ====================
 
 app = FastAPI(
-    title="Document Extraction API",
-    description="AI-powered document extraction with sequential processing",
-    version="2.3.0"
+    title="Document Extraction API v2.4",
+    description="AI-powered document extraction with comprehensive visual element detection",
+    version="2.4.0"
 )
 router = APIRouter()
 app.add_middleware(
@@ -809,28 +987,53 @@ app.add_middleware(
 
 @router.on_event("startup")
 async def startup_event():
-    logger.info("Starting Document Extraction API v2.3 (Sequential Mode)")
+    logger.info("=" * 80)
+    logger.info("🚀 Starting Document Extraction API v2.4")
+    logger.info("=" * 80)
+    logger.info("✨ NEW FEATURES:")
+    logger.info("  📊 Full table extraction with headers and rows")
+    logger.info("  🖼️  Complete image analysis and descriptions")
+    logger.info("  📈 Chart detection (pie, bar, line, scatter)")
+    logger.info("  🔲 Barcode and QR code identification")
+    logger.info("  ✅ Stamp, signature, and logo detection")
+    logger.info("=" * 80)
     logger.info(f"🔑 Gemini API Key: {GEMINI_API_KEY[:20]}...")
+    
+    # Test vision capabilities
+    test_provider = GeminiProvider(GEMINI_API_KEY)
+    if test_provider.has_file_api:
+        logger.info("✅ Vision Mode: ENABLED (Full visual element detection)")
+    else:
+        logger.warning("⚠️  Vision Mode: DISABLED (Text-only mode - limited visual detection)")
 
 @router.get("/")
 async def root():
     return {
-        "message": "Document Extraction API",
-        "version": "2.3.0",
+        "message": "Document Extraction API with Visual Element Detection",
+        "version": "2.4.0",
         "endpoint": "/extract",
-        "processing_mode": "sequential",
-        "improvements": [
-            "Sequential processing (one chunk at a time)",
-            "No worker pool concept",
-            "Simplified processing flow",
-            "Better rate limiting control",
-            "Complete content extraction"
-        ]
+        "processing_mode": "sequential_with_vision",
+        "features": [
+            "Complete text extraction",
+            "Table detection and structure extraction (headers + rows)",
+            "Image analysis and description",
+            "Chart detection (pie, bar, line, scatter)",
+            "Barcode and QR code detection",
+            "Stamp, signature, and logo identification",
+            "Sequential processing for accuracy",
+            "Party detection and obligation extraction"
+        ],
+        "visual_elements_supported": {
+            "tables": "Headers, rows, columns, merged cells",
+            "images": "Logos, diagrams, photos with descriptions",
+            "charts": "Pie, bar, line, scatter plots with data",
+            "special": "Barcodes, QR codes, stamps, signatures, watermarks"
+        }
     }
 
 @router.get("/health")
 async def health_check():
-    """Health check endpoint"""
+    """Health check endpoint with vision capability detection"""
     try:
         # Test Gemini API connection
         test_provider = GeminiProvider(GEMINI_API_KEY)
@@ -839,7 +1042,16 @@ async def health_check():
             "status": "healthy",
             "gemini_api": "connected",
             "file_api_available": test_provider.has_file_api,
-            "processing_mode": "sequential",
+            "vision_mode": "enabled" if test_provider.has_file_api else "disabled",
+            "processing_mode": "sequential_with_vision",
+            "capabilities": {
+                "text_extraction": True,
+                "table_detection": True,
+                "image_analysis": test_provider.has_file_api,
+                "chart_detection": test_provider.has_file_api,
+                "barcode_detection": test_provider.has_file_api,
+                "full_visual_detection": test_provider.has_file_api
+            },
             "timestamp": datetime.utcnow().isoformat()
         }
     except Exception as e:
@@ -849,21 +1061,38 @@ async def health_check():
             "timestamp": datetime.utcnow().isoformat()
         }
 
-@router.post("/extract")
+@router.post("/extract_thulasi")
 async def extract_document(
     file: UploadFile = File(...),
     chunk_size: int = 3,
     overlap_pages: int = 0
 ):
     """
-    Extract complete document structure using sequential processing
+    🚀 Extract complete document structure with FULL visual element detection
     
+    **Parameters:**
     - **file**: PDF file to process
-    - **chunk_size**: Pages per chunk (2-3 recommended, max 5)
+    - **chunk_size**: Pages per chunk (2-3 recommended for visual accuracy, max 5)
     - **overlap_pages**: Overlap between chunks (0-1)
     
-    Returns complete structured JSON with ALL pages extracted
-    Note: Processes chunks sequentially (one by one) for better control
+    **Returns:** Complete structured JSON with:
+    - ✅ ALL text content (no truncation)
+    - 📊 Tables with headers and rows
+    - 🖼️ Images with detailed descriptions
+    - 📈 Charts with data extraction
+    - 🔲 Barcodes, QR codes, stamps
+    - 📝 Obligations, deadlines, and alerts
+    
+    **Visual Elements Detected:**
+    - **Tables**: Complete structure with headers, rows, columns
+    - **Images**: Logos, diagrams, photos with descriptions
+    - **Charts**: Pie, bar, line, scatter plots with data values
+    - **Barcodes**: QR codes, 1D barcodes, UPC codes
+    - **Special**: Stamps, signatures, watermarks, seals
+    
+    **Note:** 
+    - Vision Mode: Requires Gemini File API for full visual detection
+    - Text-only Mode: Limited visual element detection (fallback)
     """
     if not file.filename.lower().endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDF files are supported")
@@ -903,6 +1132,12 @@ async def extract_document(
         # Initialize Gemini provider
         gemini_provider = GeminiProvider(GEMINI_API_KEY)
         
+        # Log processing mode
+        if gemini_provider.has_file_api:
+            logger.info("🎯 Processing Mode: VISION ENABLED - Full visual element detection")
+        else:
+            logger.warning("⚠️  Processing Mode: TEXT-ONLY - Limited visual detection")
+        
         # Initialize pipeline with sequential processing
         pipeline = DocumentProcessingPipeline(
             gemini_provider=gemini_provider,
@@ -911,7 +1146,7 @@ async def extract_document(
         )
         
         # Process document
-        logger.info(f"Starting sequential extraction for {file.filename}")
+        logger.info(f"Starting extraction for {file.filename}")
         result = await pipeline.process(str(file_path), file.filename, total_pages)
         
         # Add UUID to metadata
@@ -931,10 +1166,9 @@ async def extract_document(
         result["metadata"]["extraction_stats"] = {
             "total_sections": sum(len(page.get("sections", [])) for page in result["pages"]),
             "total_clauses": sum(
-                len(clause) 
+                len(section.get("clauses", [])) 
                 for page in result["pages"] 
-                for section in page.get("sections", []) 
-                for clause in section.get("clauses", [])
+                for section in page.get("sections", [])
             ),
             "total_tables": sum(
                 len(clause.get("tables", [])) 
@@ -947,11 +1181,34 @@ async def extract_document(
                 for page in result["pages"] 
                 for section in page.get("sections", []) 
                 for clause in section.get("clauses", [])
+            ),
+            "total_charts": sum(
+                len(clause.get("charts", [])) 
+                for page in result["pages"] 
+                for section in page.get("sections", []) 
+                for clause in section.get("clauses", [])
+            ),
+            "total_special_elements": sum(
+                len(clause.get("special_elements", [])) 
+                for page in result["pages"] 
+                for section in page.get("sections", []) 
+                for clause in section.get("clauses", [])
+            ),
+            "pages_with_tables": sum(
+                1 for page in result["pages"] if page.get("has_tables", False)
+            ),
+            "pages_with_images": sum(
+                1 for page in result["pages"] if page.get("has_images", False)
+            ),
+            "pages_with_charts": sum(
+                1 for page in result["pages"] if page.get("has_charts", False)
             )
         }
         
         logger.info(f"Processing complete | UUID: {document_uuid} | Pages: {pages_extracted}/{total_pages}")
-        logger.info(f"Stats: {result['metadata']['extraction_stats']}")
+        logger.info(f"📊 Visual Stats: Tables: {result['metadata']['extraction_stats']['total_tables']} | "
+                   f"Images: {result['metadata']['extraction_stats']['total_images']} | "
+                   f"Charts: {result['metadata']['extraction_stats']['total_charts']}")
         
         # Return JSON response
         return JSONResponse(
@@ -961,7 +1218,11 @@ async def extract_document(
                 "X-Document-UUID": document_uuid,
                 "X-Pages-Extracted": str(pages_extracted),
                 "X-Total-Pages": str(total_pages),
-                "X-Processing-Mode": "sequential"
+                "X-Processing-Mode": "sequential_with_vision",
+                "X-Vision-Enabled": str(gemini_provider.has_file_api),
+                "X-Tables-Found": str(result['metadata']['extraction_stats']['total_tables']),
+                "X-Images-Found": str(result['metadata']['extraction_stats']['total_images']),
+                "X-Charts-Found": str(result['metadata']['extraction_stats']['total_charts'])
             }
         )
         
@@ -993,5 +1254,7 @@ app.include_router(router)
 
 if __name__ == "__main__":
     import uvicorn
-    logger.info("Starting Document Extraction API server (Sequential Mode)...")
+    logger.info("=" * 80)
+    logger.info("🚀 Starting Document Extraction API v2.4 with Visual Detection")
+    logger.info("=" * 80)
     uvicorn.run(app, host="0.0.0.0", port=8000)

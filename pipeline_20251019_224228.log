@@ -1,0 +1,772 @@
+2025-10-19 22:42:28 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-19 22:42:28 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-19 22:42:35 | INFO     | DocumentPipeline | File uploaded: EY_ILM_OOP+SOW_final.pdf | UUID: 6eedb6ec-ede5-4fae-9863-a16b5517ea6e
+2025-10-19 22:42:35 | INFO     | DocumentPipeline | Document has 13 pages
+2025-10-19 22:42:35 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash-exp | File API: Not available (using text extraction)
+2025-10-19 22:42:35 | INFO     | DocumentPipeline | DocumentChunker initialized | Chunk size: 3, Overlap: 0
+2025-10-19 22:42:35 | INFO     | DocumentPipeline | DocumentProcessingPipeline initialized (Sequential Mode)
+2025-10-19 22:42:35 | INFO     | DocumentPipeline | Starting sequential extraction for EY_ILM_OOP+SOW_final.pdf
+2025-10-19 22:42:35 | INFO     | DocumentPipeline | Starting pipeline | Document: EY_ILM_OOP+SOW_final.pdf | Pages: 13
+2025-10-19 22:42:35 | INFO     | DocumentPipeline | PHASE 1: Creating chunks | Total pages: 13
+2025-10-19 22:42:35 | INFO     | DocumentPipeline | Created chunk_0 | Pages: 0-2
+2025-10-19 22:42:35 | INFO     | DocumentPipeline | Created chunk_1 | Pages: 3-5
+2025-10-19 22:42:36 | INFO     | DocumentPipeline | Created chunk_2 | Pages: 6-8
+2025-10-19 22:42:36 | INFO     | DocumentPipeline | Created chunk_3 | Pages: 9-11
+2025-10-19 22:42:36 | INFO     | DocumentPipeline | Created chunk_4 | Pages: 12-12
+2025-10-19 22:42:36 | INFO     | DocumentPipeline | PHASE 1 COMPLETE | 5 chunks covering all 13 pages in 0.20s
+2025-10-19 22:42:36 | INFO     | DocumentPipeline | Created 5 chunks
+2025-10-19 22:42:36 | INFO     | DocumentPipeline | PHASE 2: Processing 5 chunks sequentially
+2025-10-19 22:42:36 | INFO     | DocumentPipeline | Creating master schema
+2025-10-19 22:42:37 | ERROR    | DocumentPipeline | Schema creation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 23.011105224s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 23
+}
+]
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 581, in create_master_schema
+    response = await asyncio.get_event_loop().run_in_executor(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 583, in <lambda>
+    lambda: self.gemini.model.generate_content(prompt)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\generative_models.py", line 248, in generate_content
+    response = self._client.generate_content(request)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 566, in generate_content
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ResourceExhausted: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 23.011105224s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 23
+}
+]
+2025-10-19 22:42:37 | INFO     | DocumentPipeline | Processing chunk 1/5: chunk_0
+2025-10-19 22:42:37 | INFO     | DocumentPipeline | Extracting chunk_0 | Pages: 0-2
+2025-10-19 22:42:38 | ERROR    | DocumentPipeline | Text extraction error for chunk_0: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 22.098190451s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 22
+}
+]
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 307, in _extract_with_text
+    response = await asyncio.get_event_loop().run_in_executor(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 309, in <lambda>
+    lambda: self.model.generate_content(prompt)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\generative_models.py", line 248, in generate_content
+    response = self._client.generate_content(request)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 566, in generate_content
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ResourceExhausted: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 22.098190451s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 22
+}
+]
+2025-10-19 22:42:38 | INFO     | DocumentPipeline | Completed chunk_0: Pages 0-2: 0 pages extracted
+2025-10-19 22:42:38 | INFO     | DocumentPipeline | Processing chunk 2/5: chunk_1
+2025-10-19 22:42:38 | INFO     | DocumentPipeline | Extracting chunk_1 | Pages: 3-5
+2025-10-19 22:42:39 | ERROR    | DocumentPipeline | Text extraction error for chunk_1: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 21.491397875s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 21
+}
+]
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 307, in _extract_with_text
+    response = await asyncio.get_event_loop().run_in_executor(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 309, in <lambda>
+    lambda: self.model.generate_content(prompt)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\generative_models.py", line 248, in generate_content
+    response = self._client.generate_content(request)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 566, in generate_content
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ResourceExhausted: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 21.491397875s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 21
+}
+]
+2025-10-19 22:42:39 | INFO     | DocumentPipeline | Completed chunk_1: Pages 3-5: 0 pages extracted
+2025-10-19 22:42:39 | INFO     | DocumentPipeline | Processing chunk 3/5: chunk_2
+2025-10-19 22:42:39 | INFO     | DocumentPipeline | Extracting chunk_2 | Pages: 6-8
+2025-10-19 22:42:39 | ERROR    | DocumentPipeline | Text extraction error for chunk_2: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 21.045829281s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 21
+}
+]
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 307, in _extract_with_text
+    response = await asyncio.get_event_loop().run_in_executor(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 309, in <lambda>
+    lambda: self.model.generate_content(prompt)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\generative_models.py", line 248, in generate_content
+    response = self._client.generate_content(request)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 566, in generate_content
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ResourceExhausted: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 21.045829281s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 21
+}
+]
+2025-10-19 22:42:39 | INFO     | DocumentPipeline | Completed chunk_2: Pages 6-8: 0 pages extracted
+2025-10-19 22:42:39 | INFO     | DocumentPipeline | Processing chunk 4/5: chunk_3
+2025-10-19 22:42:39 | INFO     | DocumentPipeline | Extracting chunk_3 | Pages: 9-11
+2025-10-19 22:42:40 | ERROR    | DocumentPipeline | Text extraction error for chunk_3: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 20.424028739s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 20
+}
+]
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 307, in _extract_with_text
+    response = await asyncio.get_event_loop().run_in_executor(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 309, in <lambda>
+    lambda: self.model.generate_content(prompt)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\generative_models.py", line 248, in generate_content
+    response = self._client.generate_content(request)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 566, in generate_content
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ResourceExhausted: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 20.424028739s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 20
+}
+]
+2025-10-19 22:42:40 | INFO     | DocumentPipeline | Completed chunk_3: Pages 9-11: 0 pages extracted
+2025-10-19 22:42:40 | INFO     | DocumentPipeline | Processing chunk 5/5: chunk_4
+2025-10-19 22:42:40 | INFO     | DocumentPipeline | Extracting chunk_4 | Pages: 12-12
+2025-10-19 22:42:40 | ERROR    | DocumentPipeline | Text extraction error for chunk_4: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 20.090857972s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 20
+}
+]
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 307, in _extract_with_text
+    response = await asyncio.get_event_loop().run_in_executor(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 309, in <lambda>
+    lambda: self.model.generate_content(prompt)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\generative_models.py", line 248, in generate_content
+    response = self._client.generate_content(request)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 566, in generate_content
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ResourceExhausted: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 20.090857972s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 20
+}
+]
+2025-10-19 22:42:40 | INFO     | DocumentPipeline | Completed chunk_4: Pages 12-12: 0 pages extracted
+2025-10-19 22:42:40 | INFO     | DocumentPipeline | PHASE 2 COMPLETE | 5 results in 4.51s
+2025-10-19 22:42:40 | INFO     | DocumentPipeline | Processed 5 chunks
+2025-10-19 22:42:40 | INFO     | DocumentPipeline | Creating master schema
+2025-10-19 22:42:41 | ERROR    | DocumentPipeline | Schema creation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 19.673512032s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 19
+}
+]
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 581, in create_master_schema
+    response = await asyncio.get_event_loop().run_in_executor(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 583, in <lambda>
+    lambda: self.gemini.model.generate_content(prompt)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\generative_models.py", line 248, in generate_content
+    response = self._client.generate_content(request)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 566, in generate_content
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ResourceExhausted: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 19.673512032s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 19
+}
+]
+2025-10-19 22:42:41 | INFO     | DocumentPipeline | PHASE 3: Merging 5 chunks
+2025-10-19 22:42:41 | INFO     | DocumentPipeline | PHASE 3 COMPLETE | 0 unique pages
+2025-10-19 22:42:41 | INFO     | DocumentPipeline | Merged into 0 pages
+2025-10-19 22:42:41 | ERROR    | DocumentPipeline | Party detection error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 19.271030506s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 19
+}
+]
+2025-10-19 22:42:41 | INFO     | DocumentPipeline | Extracting summary data
+2025-10-19 22:42:41 | ERROR    | DocumentPipeline | Summary extraction error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 18.992040535s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 18
+}
+]
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 518, in extract_summary_data
+    response = await asyncio.get_event_loop().run_in_executor(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 520, in <lambda>
+    lambda: self.model.generate_content(prompt)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\generative_models.py", line 248, in generate_content
+    response = self._client.generate_content(request)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 566, in generate_content
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ResourceExhausted: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 50
+Please retry in 18.992040535s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerDayPerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.0-flash-exp"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 50
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 18
+}
+]
+2025-10-19 22:42:41 | INFO     | DocumentPipeline | PIPELINE COMPLETE | Extracted 0/13 pages in 5.82s
+2025-10-19 22:42:41 | WARNING  | DocumentPipeline | Only extracted 0/13 pages - some pages may be missing
+2025-10-19 22:42:41 | INFO     | DocumentPipeline | Processing complete | UUID: 6eedb6ec-ede5-4fae-9863-a16b5517ea6e | Pages: 0/13
+2025-10-19 22:42:41 | INFO     | DocumentPipeline | Stats: {'total_sections': 0, 'total_clauses': 0, 'total_tables': 0, 'total_images': 0}

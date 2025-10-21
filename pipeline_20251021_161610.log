@@ -1,0 +1,20 @@
+2025-10-21 16:16:10 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-21 16:16:10 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-21 16:16:10 | INFO     | DocumentPipeline | ================================================================================
+2025-10-21 16:16:10 | INFO     | DocumentPipeline | ================================================================================
+2025-10-21 16:16:11 | INFO     | DocumentPipeline | ================================================================================
+2025-10-21 16:16:11 | INFO     | DocumentPipeline | ================================================================================
+2025-10-21 16:16:17 | INFO     | DocumentPipeline | ================================================================================
+2025-10-21 16:16:17 | INFO     | DocumentPipeline | ================================================================================
+2025-10-21 16:16:17 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-21 16:16:17 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-21 16:16:17 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-21 16:16:17 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-21 16:16:17 | INFO     | DocumentPipeline | ================================================================================
+2025-10-21 16:16:17 | INFO     | DocumentPipeline | ================================================================================
+2025-10-21 16:16:17 | INFO     | DocumentPipeline | ================================================================================
+2025-10-21 16:16:17 | INFO     | DocumentPipeline | ================================================================================
+2025-10-21 16:16:18 | INFO     | DocumentPipeline | ================================================================================
+2025-10-21 16:16:18 | INFO     | DocumentPipeline | ================================================================================
+2025-10-21 16:16:18 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-21 16:16:18 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)

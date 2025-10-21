@@ -1,0 +1,98 @@
+2025-10-20 00:17:32 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-20 00:17:32 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-20 00:17:32 | INFO     | DocumentPipeline | ================================================================================
+2025-10-20 00:17:32 | INFO     | DocumentPipeline | ================================================================================
+2025-10-20 00:17:32 | INFO     | DocumentPipeline | ================================================================================
+2025-10-20 00:17:32 | INFO     | DocumentPipeline | ================================================================================
+2025-10-20 00:17:32 | INFO     | DocumentPipeline | ================================================================================
+2025-10-20 00:17:32 | INFO     | DocumentPipeline | ================================================================================
+2025-10-20 00:17:32 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-20 00:17:32 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-20 00:17:32 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-20 00:17:32 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-20 00:17:33 | INFO     | DocumentPipeline | ================================================================================
+2025-10-20 00:17:33 | INFO     | DocumentPipeline | ================================================================================
+2025-10-20 00:17:33 | INFO     | DocumentPipeline | ================================================================================
+2025-10-20 00:17:33 | INFO     | DocumentPipeline | ================================================================================
+2025-10-20 00:17:33 | INFO     | DocumentPipeline | ================================================================================
+2025-10-20 00:17:33 | INFO     | DocumentPipeline | ================================================================================
+2025-10-20 00:17:33 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-20 00:17:33 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | File uploaded: Telecom USA1-12-C074_SOW sample.pdf | UUID: 6b6ec268-8405-4c03-b20c-2dd29254dcd5
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | File uploaded: Telecom USA1-12-C074_SOW sample.pdf | UUID: 6b6ec268-8405-4c03-b20c-2dd29254dcd5
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Document has 4 pages
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Document has 4 pages
+2025-10-20 00:18:54 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-20 00:18:54 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | DocumentChunker initialized | Chunk size: 3, Overlap: 0
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | DocumentChunker initialized | Chunk size: 3, Overlap: 0
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | DocumentProcessingPipeline initialized (Sequential Mode with Visual Detection)
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | DocumentProcessingPipeline initialized (Sequential Mode with Visual Detection)
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Starting extraction for Telecom USA1-12-C074_SOW sample.pdf
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Starting extraction for Telecom USA1-12-C074_SOW sample.pdf
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Starting pipeline | Document: Telecom USA1-12-C074_SOW sample.pdf | Pages: 4
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Starting pipeline | Document: Telecom USA1-12-C074_SOW sample.pdf | Pages: 4
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | PHASE 1: Creating chunks | Total pages: 4
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | PHASE 1: Creating chunks | Total pages: 4
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Created chunk_0 | Pages: 0-2
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Created chunk_0 | Pages: 0-2
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Created chunk_1 | Pages: 3-3
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Created chunk_1 | Pages: 3-3
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | PHASE 1 COMPLETE | 2 chunks covering all 4 pages in 0.25s
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | PHASE 1 COMPLETE | 2 chunks covering all 4 pages in 0.25s
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Created 2 chunks
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Created 2 chunks
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | PHASE 2: Processing 2 chunks sequentially
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | PHASE 2: Processing 2 chunks sequentially
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Creating master schema
+2025-10-20 00:18:54 | INFO     | DocumentPipeline | Creating master schema
+2025-10-20 00:19:01 | INFO     | DocumentPipeline | Master schema: Exhibit
+2025-10-20 00:19:01 | INFO     | DocumentPipeline | Master schema: Exhibit
+2025-10-20 00:19:01 | INFO     | DocumentPipeline | Processing chunk 1/2: chunk_0
+2025-10-20 00:19:01 | INFO     | DocumentPipeline | Processing chunk 1/2: chunk_0
+2025-10-20 00:19:01 | INFO     | DocumentPipeline | Extracting chunk_0 | Pages: 0-2 | Mode: Text-only
+2025-10-20 00:19:01 | INFO     | DocumentPipeline | Extracting chunk_0 | Pages: 0-2 | Mode: Text-only
+2025-10-20 00:19:01 | WARNING  | DocumentPipeline | chunk_0: Using Text-only Mode - Visual elements may be incomplete
+2025-10-20 00:19:01 | WARNING  | DocumentPipeline | chunk_0: Using Text-only Mode - Visual elements may be incomplete
+2025-10-20 00:19:09 | WARNING  | DocumentPipeline | chunk_0: Using text-only mode - visual elements may be incomplete
+2025-10-20 00:19:09 | WARNING  | DocumentPipeline | chunk_0: Using text-only mode - visual elements may be incomplete
+2025-10-20 00:19:09 | INFO     | DocumentPipeline | chunk_0: Extracted 3 pages | Tables: 0 | Images: 0 | Charts: 0
+2025-10-20 00:19:09 | INFO     | DocumentPipeline | chunk_0: Extracted 3 pages | Tables: 0 | Images: 0 | Charts: 0
+2025-10-20 00:19:09 | INFO     | DocumentPipeline | Completed chunk_0: Pages 0-2: 3 pages extracted
+2025-10-20 00:19:09 | INFO     | DocumentPipeline | Completed chunk_0: Pages 0-2: 3 pages extracted
+2025-10-20 00:19:09 | INFO     | DocumentPipeline | Processing chunk 2/2: chunk_1
+2025-10-20 00:19:09 | INFO     | DocumentPipeline | Processing chunk 2/2: chunk_1
+2025-10-20 00:19:09 | INFO     | DocumentPipeline | Extracting chunk_1 | Pages: 3-3 | Mode: Text-only
+2025-10-20 00:19:09 | INFO     | DocumentPipeline | Extracting chunk_1 | Pages: 3-3 | Mode: Text-only
+2025-10-20 00:19:09 | WARNING  | DocumentPipeline | chunk_1: Using Text-only Mode - Visual elements may be incomplete
+2025-10-20 00:19:09 | WARNING  | DocumentPipeline | chunk_1: Using Text-only Mode - Visual elements may be incomplete
+2025-10-20 00:19:11 | WARNING  | DocumentPipeline | chunk_1: Using text-only mode - visual elements may be incomplete
+2025-10-20 00:19:11 | WARNING  | DocumentPipeline | chunk_1: Using text-only mode - visual elements may be incomplete
+2025-10-20 00:19:11 | INFO     | DocumentPipeline | chunk_1: Extracted 1 pages | Tables: 0 | Images: 0 | Charts: 0
+2025-10-20 00:19:11 | INFO     | DocumentPipeline | chunk_1: Extracted 1 pages | Tables: 0 | Images: 0 | Charts: 0
+2025-10-20 00:19:11 | INFO     | DocumentPipeline | Completed chunk_1: Pages 3-3: 1 pages extracted
+2025-10-20 00:19:11 | INFO     | DocumentPipeline | Completed chunk_1: Pages 3-3: 1 pages extracted
+2025-10-20 00:19:11 | INFO     | DocumentPipeline | PHASE 2 COMPLETE | 2 results in 16.74s
+2025-10-20 00:19:11 | INFO     | DocumentPipeline | PHASE 2 COMPLETE | 2 results in 16.74s
+2025-10-20 00:19:11 | INFO     | DocumentPipeline | Processed 2 chunks
+2025-10-20 00:19:11 | INFO     | DocumentPipeline | Processed 2 chunks
+2025-10-20 00:19:11 | INFO     | DocumentPipeline | Creating master schema
+2025-10-20 00:19:11 | INFO     | DocumentPipeline | Creating master schema
+2025-10-20 00:19:13 | INFO     | DocumentPipeline | Master schema: Exhibit
+2025-10-20 00:19:13 | INFO     | DocumentPipeline | Master schema: Exhibit
+2025-10-20 00:19:13 | INFO     | DocumentPipeline | PHASE 3: Merging 2 chunks
+2025-10-20 00:19:13 | INFO     | DocumentPipeline | PHASE 3: Merging 2 chunks
+2025-10-20 00:19:13 | INFO     | DocumentPipeline | PHASE 3 COMPLETE | 4 unique pages
+2025-10-20 00:19:13 | INFO     | DocumentPipeline | PHASE 3 COMPLETE | 4 unique pages
+2025-10-20 00:19:13 | INFO     | DocumentPipeline | Merged into 4 pages
+2025-10-20 00:19:13 | INFO     | DocumentPipeline | Merged into 4 pages
+2025-10-20 00:19:15 | INFO     | DocumentPipeline | Detected parties: ['Metropolitan Washington Airports Authority', 'Verizon', 'NetPlus', 'SonicWall', 'NetGear', 'HP', 'DiGi', 'PollCat', 'PSCC']
+2025-10-20 00:19:15 | INFO     | DocumentPipeline | Detected parties: ['Metropolitan Washington Airports Authority', 'Verizon', 'NetPlus', 'SonicWall', 'NetGear', 'HP', 'DiGi', 'PollCat', 'PSCC']
+2025-10-20 00:19:15 | INFO     | DocumentPipeline | Extracting summary data
+2025-10-20 00:19:15 | INFO     | DocumentPipeline | Extracting summary data
+2025-10-20 00:19:17 | INFO     | DocumentPipeline | Summary: 2 obligations, 0 deadlines, 0 alerts
+2025-10-20 00:19:17 | INFO     | DocumentPipeline | Summary: 2 obligations, 0 deadlines, 0 alerts
+2025-10-20 00:19:17 | INFO     | DocumentPipeline | PIPELINE COMPLETE | Extracted 4/4 pages in 23.45s
+2025-10-20 00:19:17 | INFO     | DocumentPipeline | PIPELINE COMPLETE | Extracted 4/4 pages in 23.45s
+2025-10-20 00:19:17 | INFO     | DocumentPipeline | Processing complete | UUID: 6b6ec268-8405-4c03-b20c-2dd29254dcd5 | Pages: 4/4
+2025-10-20 00:19:17 | INFO     | DocumentPipeline | Processing complete | UUID: 6b6ec268-8405-4c03-b20c-2dd29254dcd5 | Pages: 4/4

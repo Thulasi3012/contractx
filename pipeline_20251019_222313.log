@@ -1,0 +1,48 @@
+2025-10-19 22:23:13 | INFO     | DocumentPipeline | Starting Document Extraction API v2.1
+2025-10-19 22:23:13 | INFO     | DocumentPipeline | Starting Document Extraction API v2.1
+2025-10-19 22:23:37 | INFO     | DocumentPipeline | File uploaded: Exhibit A_ Support, SLA and Data Security.pdf | UUID: b52ce881-7ac2-4598-a21a-9d319853d690
+2025-10-19 22:23:37 | INFO     | DocumentPipeline | Document has 6 pages
+2025-10-19 22:23:37 | INFO     | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash
+2025-10-19 22:23:37 | INFO     | DocumentPipeline | DocumentChunker initialized | Chunk size: 3, Overlap: 2
+2025-10-19 22:23:37 | INFO     | DocumentPipeline | DocumentProcessingPipeline initialized
+2025-10-19 22:23:37 | INFO     | DocumentPipeline | Starting extraction for Exhibit A_ Support, SLA and Data Security.pdf
+2025-10-19 22:23:37 | INFO     | DocumentPipeline | Starting pipeline | Document: Exhibit A_ Support, SLA and Data Security.pdf | Pages: 6
+2025-10-19 22:23:37 | INFO     | DocumentPipeline | PHASE 1: Creating chunks | Total pages: 6
+2025-10-19 22:23:37 | INFO     | DocumentPipeline | Created chunk_0 | Pages: 0-2
+2025-10-19 22:23:38 | INFO     | DocumentPipeline | Created chunk_1 | Pages: 3-5
+2025-10-19 22:23:38 | INFO     | DocumentPipeline | PHASE 1 COMPLETE | 2 chunks covering all 6 pages in 0.03s
+2025-10-19 22:23:38 | INFO     | DocumentPipeline | Created 2 chunks
+2025-10-19 22:23:38 | INFO     | DocumentPipeline | PHASE 2: Processing 2 chunks with 2 workers
+2025-10-19 22:23:38 | INFO     | DocumentPipeline | Creating master schema
+2025-10-19 22:23:40 | INFO     | DocumentPipeline | Master schema: Service Level Agreement
+2025-10-19 22:23:40 | INFO     | DocumentPipeline | Worker 0 processing chunk_0
+2025-10-19 22:23:40 | INFO     | DocumentPipeline | Extracting chunk_0 | Pages: 0-2
+2025-10-19 22:23:40 | ERROR    | DocumentPipeline | Extraction error for chunk_0: module 'google.generativeai' has no attribute 'upload_file'
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 200, in process_full_extraction
+    uploaded_file = genai.upload_file(chunk_pdf_path)
+                    ^^^^^^^^^^^^^^^^^
+AttributeError: module 'google.generativeai' has no attribute 'upload_file'
+2025-10-19 22:23:40 | INFO     | DocumentPipeline | Worker 0 completed chunk_0: Pages 0-2: 0 pages extracted
+2025-10-19 22:23:40 | INFO     | DocumentPipeline | Worker 0 processing chunk_1
+2025-10-19 22:23:40 | INFO     | DocumentPipeline | Extracting chunk_1 | Pages: 3-5
+2025-10-19 22:23:40 | ERROR    | DocumentPipeline | Extraction error for chunk_1: module 'google.generativeai' has no attribute 'upload_file'
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 200, in process_full_extraction
+    uploaded_file = genai.upload_file(chunk_pdf_path)
+                    ^^^^^^^^^^^^^^^^^
+AttributeError: module 'google.generativeai' has no attribute 'upload_file'
+2025-10-19 22:23:40 | INFO     | DocumentPipeline | Worker 0 completed chunk_1: Pages 3-5: 0 pages extracted
+2025-10-19 22:23:42 | INFO     | DocumentPipeline | PHASE 2 COMPLETE | 2 results in 4.24s
+2025-10-19 22:23:42 | INFO     | DocumentPipeline | Processed 2 chunks
+2025-10-19 22:23:42 | INFO     | DocumentPipeline | Creating master schema
+2025-10-19 22:23:43 | INFO     | DocumentPipeline | Master schema: Service Level Agreement
+2025-10-19 22:23:43 | INFO     | DocumentPipeline | PHASE 3: Merging 2 chunks
+2025-10-19 22:23:43 | INFO     | DocumentPipeline | PHASE 3 COMPLETE | 0 unique pages
+2025-10-19 22:23:43 | INFO     | DocumentPipeline | Merged into 0 pages
+2025-10-19 22:23:44 | INFO     | DocumentPipeline | Extracting summary data
+2025-10-19 22:23:46 | INFO     | DocumentPipeline | Summary: 0 obligations, 0 deadlines, 0 alerts
+2025-10-19 22:23:46 | INFO     | DocumentPipeline | PIPELINE COMPLETE | Extracted 0/6 pages in 8.36s
+2025-10-19 22:23:46 | WARNING  | DocumentPipeline | Only extracted 0/6 pages - some pages may be missing
+2025-10-19 22:23:46 | INFO     | DocumentPipeline | Processing complete | UUID: b52ce881-7ac2-4598-a21a-9d319853d690 | Pages: 0/6
+2025-10-19 22:23:46 | INFO     | DocumentPipeline | Stats: {'total_sections': 0, 'total_clauses': 0, 'total_tables': 0, 'total_images': 0}

@@ -1,0 +1,140 @@
+2025-10-19 23:21:22 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-19 23:21:22 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-19 23:21:22 | INFO     | DocumentPipeline | ================================================================================
+2025-10-19 23:21:22 | INFO     | DocumentPipeline | ================================================================================
+2025-10-19 23:21:22 | INFO     | DocumentPipeline | ================================================================================
+2025-10-19 23:21:22 | INFO     | DocumentPipeline | ================================================================================
+2025-10-19 23:21:22 | INFO     | DocumentPipeline | ================================================================================
+2025-10-19 23:21:22 | INFO     | DocumentPipeline | ================================================================================
+2025-10-19 23:21:22 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-19 23:21:22 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-19 23:21:22 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-19 23:21:22 | INFO     | DocumentPipeline | Starting Document Extraction API v2.3 (Sequential Mode)
+2025-10-19 23:21:23 | INFO     | DocumentPipeline | ================================================================================
+2025-10-19 23:21:23 | INFO     | DocumentPipeline | ================================================================================
+2025-10-19 23:21:23 | INFO     | DocumentPipeline | ================================================================================
+2025-10-19 23:21:23 | INFO     | DocumentPipeline | ================================================================================
+2025-10-19 23:21:23 | INFO     | DocumentPipeline | ================================================================================
+2025-10-19 23:21:23 | INFO     | DocumentPipeline | ================================================================================
+2025-10-19 23:21:23 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-19 23:21:23 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | File uploaded: EY_ILM_OOP+SOW_final.pdf | UUID: 1851bc9d-1fb1-4bbf-93ec-0729d1566043
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | File uploaded: EY_ILM_OOP+SOW_final.pdf | UUID: 1851bc9d-1fb1-4bbf-93ec-0729d1566043
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Document has 13 pages
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Document has 13 pages
+2025-10-19 23:22:11 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-19 23:22:11 | WARNING  | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash | File API: Not available (Text-only Mode)
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | DocumentChunker initialized | Chunk size: 3, Overlap: 0
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | DocumentChunker initialized | Chunk size: 3, Overlap: 0
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | DocumentProcessingPipeline initialized (Sequential Mode with Visual Detection)
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | DocumentProcessingPipeline initialized (Sequential Mode with Visual Detection)
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Starting extraction for EY_ILM_OOP+SOW_final.pdf
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Starting extraction for EY_ILM_OOP+SOW_final.pdf
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Starting pipeline | Document: EY_ILM_OOP+SOW_final.pdf | Pages: 13
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Starting pipeline | Document: EY_ILM_OOP+SOW_final.pdf | Pages: 13
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | PHASE 1: Creating chunks | Total pages: 13
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | PHASE 1: Creating chunks | Total pages: 13
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Created chunk_0 | Pages: 0-2
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Created chunk_0 | Pages: 0-2
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Created chunk_1 | Pages: 3-5
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Created chunk_1 | Pages: 3-5
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Created chunk_2 | Pages: 6-8
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Created chunk_2 | Pages: 6-8
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Created chunk_3 | Pages: 9-11
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Created chunk_3 | Pages: 9-11
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Created chunk_4 | Pages: 12-12
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Created chunk_4 | Pages: 12-12
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | PHASE 1 COMPLETE | 5 chunks covering all 13 pages in 0.24s
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | PHASE 1 COMPLETE | 5 chunks covering all 13 pages in 0.24s
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Created 5 chunks
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Created 5 chunks
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | PHASE 2: Processing 5 chunks sequentially
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | PHASE 2: Processing 5 chunks sequentially
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Creating master schema
+2025-10-19 23:22:11 | INFO     | DocumentPipeline | Creating master schema
+2025-10-19 23:22:14 | INFO     | DocumentPipeline | Master schema: Statement of Work
+2025-10-19 23:22:14 | INFO     | DocumentPipeline | Master schema: Statement of Work
+2025-10-19 23:22:14 | INFO     | DocumentPipeline | Processing chunk 1/5: chunk_0
+2025-10-19 23:22:14 | INFO     | DocumentPipeline | Processing chunk 1/5: chunk_0
+2025-10-19 23:22:14 | INFO     | DocumentPipeline | Extracting chunk_0 | Pages: 0-2 | Mode: Text-only
+2025-10-19 23:22:14 | INFO     | DocumentPipeline | Extracting chunk_0 | Pages: 0-2 | Mode: Text-only
+2025-10-19 23:22:14 | WARNING  | DocumentPipeline | chunk_0: Using Text-only Mode - Visual elements may be incomplete
+2025-10-19 23:22:14 | WARNING  | DocumentPipeline | chunk_0: Using Text-only Mode - Visual elements may be incomplete
+2025-10-19 23:22:32 | WARNING  | DocumentPipeline | chunk_0: Using text-only mode - visual elements may be incomplete
+2025-10-19 23:22:32 | WARNING  | DocumentPipeline | chunk_0: Using text-only mode - visual elements may be incomplete
+2025-10-19 23:22:32 | INFO     | DocumentPipeline | chunk_0: Extracted 3 pages | Tables: 2 | Images: 0 | Charts: 0
+2025-10-19 23:22:32 | INFO     | DocumentPipeline | chunk_0: Extracted 3 pages | Tables: 2 | Images: 0 | Charts: 0
+2025-10-19 23:22:32 | INFO     | DocumentPipeline | Completed chunk_0: Pages 0-2: 3 pages extracted
+2025-10-19 23:22:32 | INFO     | DocumentPipeline | Completed chunk_0: Pages 0-2: 3 pages extracted
+2025-10-19 23:22:32 | INFO     | DocumentPipeline | Processing chunk 2/5: chunk_1
+2025-10-19 23:22:32 | INFO     | DocumentPipeline | Processing chunk 2/5: chunk_1
+2025-10-19 23:22:32 | INFO     | DocumentPipeline | Extracting chunk_1 | Pages: 3-5 | Mode: Text-only
+2025-10-19 23:22:32 | INFO     | DocumentPipeline | Extracting chunk_1 | Pages: 3-5 | Mode: Text-only
+2025-10-19 23:22:32 | WARNING  | DocumentPipeline | chunk_1: Using Text-only Mode - Visual elements may be incomplete
+2025-10-19 23:22:32 | WARNING  | DocumentPipeline | chunk_1: Using Text-only Mode - Visual elements may be incomplete
+2025-10-19 23:22:46 | WARNING  | DocumentPipeline | chunk_1: Using text-only mode - visual elements may be incomplete
+2025-10-19 23:22:46 | WARNING  | DocumentPipeline | chunk_1: Using text-only mode - visual elements may be incomplete
+2025-10-19 23:22:46 | INFO     | DocumentPipeline | chunk_1: Extracted 3 pages | Tables: 3 | Images: 0 | Charts: 0
+2025-10-19 23:22:46 | INFO     | DocumentPipeline | chunk_1: Extracted 3 pages | Tables: 3 | Images: 0 | Charts: 0
+2025-10-19 23:22:46 | INFO     | DocumentPipeline | Completed chunk_1: Pages 3-5: 3 pages extracted
+2025-10-19 23:22:46 | INFO     | DocumentPipeline | Completed chunk_1: Pages 3-5: 3 pages extracted
+2025-10-19 23:22:46 | INFO     | DocumentPipeline | Processing chunk 3/5: chunk_2
+2025-10-19 23:22:46 | INFO     | DocumentPipeline | Processing chunk 3/5: chunk_2
+2025-10-19 23:22:46 | INFO     | DocumentPipeline | Extracting chunk_2 | Pages: 6-8 | Mode: Text-only
+2025-10-19 23:22:46 | INFO     | DocumentPipeline | Extracting chunk_2 | Pages: 6-8 | Mode: Text-only
+2025-10-19 23:22:46 | WARNING  | DocumentPipeline | chunk_2: Using Text-only Mode - Visual elements may be incomplete
+2025-10-19 23:22:46 | WARNING  | DocumentPipeline | chunk_2: Using Text-only Mode - Visual elements may be incomplete
+2025-10-19 23:23:04 | WARNING  | DocumentPipeline | chunk_2: Using text-only mode - visual elements may be incomplete
+2025-10-19 23:23:04 | WARNING  | DocumentPipeline | chunk_2: Using text-only mode - visual elements may be incomplete
+2025-10-19 23:23:04 | INFO     | DocumentPipeline | chunk_2: Extracted 3 pages | Tables: 0 | Images: 0 | Charts: 0
+2025-10-19 23:23:04 | INFO     | DocumentPipeline | chunk_2: Extracted 3 pages | Tables: 0 | Images: 0 | Charts: 0
+2025-10-19 23:23:04 | INFO     | DocumentPipeline | Completed chunk_2: Pages 6-8: 3 pages extracted
+2025-10-19 23:23:04 | INFO     | DocumentPipeline | Completed chunk_2: Pages 6-8: 3 pages extracted
+2025-10-19 23:23:04 | INFO     | DocumentPipeline | Processing chunk 4/5: chunk_3
+2025-10-19 23:23:04 | INFO     | DocumentPipeline | Processing chunk 4/5: chunk_3
+2025-10-19 23:23:04 | INFO     | DocumentPipeline | Extracting chunk_3 | Pages: 9-11 | Mode: Text-only
+2025-10-19 23:23:04 | INFO     | DocumentPipeline | Extracting chunk_3 | Pages: 9-11 | Mode: Text-only
+2025-10-19 23:23:04 | WARNING  | DocumentPipeline | chunk_3: Using Text-only Mode - Visual elements may be incomplete
+2025-10-19 23:23:04 | WARNING  | DocumentPipeline | chunk_3: Using Text-only Mode - Visual elements may be incomplete
+2025-10-19 23:23:12 | WARNING  | DocumentPipeline | chunk_3: Using text-only mode - visual elements may be incomplete
+2025-10-19 23:23:12 | WARNING  | DocumentPipeline | chunk_3: Using text-only mode - visual elements may be incomplete
+2025-10-19 23:23:12 | INFO     | DocumentPipeline | chunk_3: Extracted 3 pages | Tables: 0 | Images: 0 | Charts: 0
+2025-10-19 23:23:12 | INFO     | DocumentPipeline | chunk_3: Extracted 3 pages | Tables: 0 | Images: 0 | Charts: 0
+2025-10-19 23:23:12 | INFO     | DocumentPipeline | Completed chunk_3: Pages 9-11: 3 pages extracted
+2025-10-19 23:23:12 | INFO     | DocumentPipeline | Completed chunk_3: Pages 9-11: 3 pages extracted
+2025-10-19 23:23:12 | INFO     | DocumentPipeline | Processing chunk 5/5: chunk_4
+2025-10-19 23:23:12 | INFO     | DocumentPipeline | Processing chunk 5/5: chunk_4
+2025-10-19 23:23:12 | INFO     | DocumentPipeline | Extracting chunk_4 | Pages: 12-12 | Mode: Text-only
+2025-10-19 23:23:12 | INFO     | DocumentPipeline | Extracting chunk_4 | Pages: 12-12 | Mode: Text-only
+2025-10-19 23:23:12 | WARNING  | DocumentPipeline | chunk_4: Using Text-only Mode - Visual elements may be incomplete
+2025-10-19 23:23:12 | WARNING  | DocumentPipeline | chunk_4: Using Text-only Mode - Visual elements may be incomplete
+2025-10-19 23:23:17 | WARNING  | DocumentPipeline | chunk_4: Using text-only mode - visual elements may be incomplete
+2025-10-19 23:23:17 | WARNING  | DocumentPipeline | chunk_4: Using text-only mode - visual elements may be incomplete
+2025-10-19 23:23:17 | INFO     | DocumentPipeline | chunk_4: Extracted 1 pages | Tables: 0 | Images: 0 | Charts: 0
+2025-10-19 23:23:17 | INFO     | DocumentPipeline | chunk_4: Extracted 1 pages | Tables: 0 | Images: 0 | Charts: 0
+2025-10-19 23:23:17 | INFO     | DocumentPipeline | Completed chunk_4: Pages 12-12: 1 pages extracted
+2025-10-19 23:23:17 | INFO     | DocumentPipeline | Completed chunk_4: Pages 12-12: 1 pages extracted
+2025-10-19 23:23:17 | INFO     | DocumentPipeline | PHASE 2 COMPLETE | 5 results in 66.33s
+2025-10-19 23:23:17 | INFO     | DocumentPipeline | PHASE 2 COMPLETE | 5 results in 66.33s
+2025-10-19 23:23:17 | INFO     | DocumentPipeline | Processed 5 chunks
+2025-10-19 23:23:17 | INFO     | DocumentPipeline | Processed 5 chunks
+2025-10-19 23:23:17 | INFO     | DocumentPipeline | Creating master schema
+2025-10-19 23:23:17 | INFO     | DocumentPipeline | Creating master schema
+2025-10-19 23:23:19 | INFO     | DocumentPipeline | Master schema: Statement of Work
+2025-10-19 23:23:19 | INFO     | DocumentPipeline | Master schema: Statement of Work
+2025-10-19 23:23:19 | INFO     | DocumentPipeline | PHASE 3: Merging 5 chunks
+2025-10-19 23:23:19 | INFO     | DocumentPipeline | PHASE 3: Merging 5 chunks
+2025-10-19 23:23:19 | INFO     | DocumentPipeline | PHASE 3 COMPLETE | 13 unique pages
+2025-10-19 23:23:19 | INFO     | DocumentPipeline | PHASE 3 COMPLETE | 13 unique pages
+2025-10-19 23:23:19 | INFO     | DocumentPipeline | Merged into 13 pages
+2025-10-19 23:23:19 | INFO     | DocumentPipeline | Merged into 13 pages
+2025-10-19 23:23:20 | INFO     | DocumentPipeline | Detected parties: ['Sony Pictures Entertainment Inc.', 'Ernst & Young LLP']
+2025-10-19 23:23:20 | INFO     | DocumentPipeline | Detected parties: ['Sony Pictures Entertainment Inc.', 'Ernst & Young LLP']
+2025-10-19 23:23:20 | INFO     | DocumentPipeline | Extracting summary data
+2025-10-19 23:23:20 | INFO     | DocumentPipeline | Extracting summary data
+2025-10-19 23:23:25 | INFO     | DocumentPipeline | Summary: 8 obligations, 2 deadlines, 0 alerts
+2025-10-19 23:23:25 | INFO     | DocumentPipeline | Summary: 8 obligations, 2 deadlines, 0 alerts
+2025-10-19 23:23:25 | INFO     | DocumentPipeline | PIPELINE COMPLETE | Extracted 13/13 pages in 74.48s
+2025-10-19 23:23:25 | INFO     | DocumentPipeline | PIPELINE COMPLETE | Extracted 13/13 pages in 74.48s
+2025-10-19 23:23:25 | INFO     | DocumentPipeline | Processing complete | UUID: 1851bc9d-1fb1-4bbf-93ec-0729d1566043 | Pages: 13/13
+2025-10-19 23:23:25 | INFO     | DocumentPipeline | Processing complete | UUID: 1851bc9d-1fb1-4bbf-93ec-0729d1566043 | Pages: 13/13

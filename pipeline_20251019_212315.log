@@ -1,0 +1,273 @@
+2025-10-19 21:23:15 | INFO     | DocumentPipeline | Starting Document Extraction API v2.1
+2025-10-19 21:23:15 | INFO     | DocumentPipeline | Starting Document Extraction API v2.1
+2025-10-19 21:23:24 | INFO     | DocumentPipeline | File uploaded: Exhibit A_ Support, SLA and Data Security.pdf | UUID: dd6fe5f3-bf49-4112-b845-000e3fe194c9
+2025-10-19 21:23:24 | INFO     | DocumentPipeline | Document has 6 pages
+2025-10-19 21:23:31 | INFO     | DocumentPipeline | File uploaded: Exhibit A_ Support, SLA and Data Security.pdf | UUID: 68adc9d8-884f-4087-bc24-402b84ebd406
+2025-10-19 21:23:31 | INFO     | DocumentPipeline | Document has 6 pages
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | File uploaded: Exhibit A_ Support, SLA and Data Security.pdf | UUID: 7f82246f-6f55-466b-ba91-1546a802768b
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | Document has 6 pages
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash-exp
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | DocumentChunker initialized | Chunk size: 3, Overlap: 2
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | DocumentProcessingPipeline initialized
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | Starting extraction for Exhibit A_ Support, SLA and Data Security.pdf
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | Starting pipeline | Document: Exhibit A_ Support, SLA and Data Security.pdf | Pages: 6
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | PHASE 1: Creating chunks | Total pages: 6
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | Created chunk_0 | Pages: 0-2
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | Created chunk_1 | Pages: 3-5
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | PHASE 1 COMPLETE | 2 chunks covering all 6 pages in 0.05s
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | Created 2 chunks
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | PHASE 2: Processing 2 chunks with 2 workers
+2025-10-19 21:23:41 | INFO     | DocumentPipeline | Creating master schema
+2025-10-19 21:23:43 | ERROR    | DocumentPipeline | Schema creation error: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 485, in create_master_schema
+    response = await asyncio.get_event_loop().run_in_executor(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 487, in <lambda>
+    lambda: self.gemini.model.generate_content(prompt)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\generative_models.py", line 331, in generate_content
+    response = self._client.generate_content(
+        request,
+        **request_options,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 835, in generate_content
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.InvalidArgument: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-19 21:23:43 | INFO     | DocumentPipeline | Worker 0 processing chunk_0
+2025-10-19 21:23:43 | INFO     | DocumentPipeline | Extracting chunk_0 | Pages: 0-2
+2025-10-19 21:23:45 | ERROR    | DocumentPipeline | Extraction error for chunk_0: <HttpError 400 when requesting https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=YOUR_API_KEY_HERE returned "API key not valid. Please pass a valid API key.". Details: "[{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]">
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 199, in process_full_extraction
+    uploaded_file = genai.upload_file(chunk_pdf_path)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\files.py", line 85, in upload_file
+    response = client.create_file(
+        path=path, mime_type=mime_type, name=name, display_name=display_name, resumable=resumable
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\client.py", line 103, in create_file
+    self._setup_discovery_api(metadata)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\client.py", line 84, in _setup_discovery_api
+    response, content = request.execute()
+                        ~~~~~~~~~~~~~~~^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\googleapiclient\_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\googleapiclient\http.py", line 938, in execute
+    raise HttpError(resp, content, uri=self.uri)
+googleapiclient.errors.HttpError: <HttpError 400 when requesting https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=YOUR_API_KEY_HERE returned "API key not valid. Please pass a valid API key.". Details: "[{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]">
+2025-10-19 21:23:45 | INFO     | DocumentPipeline | Worker 0 completed chunk_0: Pages 0-2: 0 pages extracted
+2025-10-19 21:23:45 | INFO     | DocumentPipeline | Worker 0 processing chunk_1
+2025-10-19 21:23:45 | INFO     | DocumentPipeline | Extracting chunk_1 | Pages: 3-5
+2025-10-19 21:23:47 | ERROR    | DocumentPipeline | Extraction error for chunk_1: <HttpError 400 when requesting https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=YOUR_API_KEY_HERE returned "API key not valid. Please pass a valid API key.". Details: "[{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]">
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 199, in process_full_extraction
+    uploaded_file = genai.upload_file(chunk_pdf_path)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\files.py", line 85, in upload_file
+    response = client.create_file(
+        path=path, mime_type=mime_type, name=name, display_name=display_name, resumable=resumable
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\client.py", line 103, in create_file
+    self._setup_discovery_api(metadata)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\client.py", line 84, in _setup_discovery_api
+    response, content = request.execute()
+                        ~~~~~~~~~~~~~~~^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\googleapiclient\_helpers.py", line 130, in positional_wrapper
+    return wrapped(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\googleapiclient\http.py", line 938, in execute
+    raise HttpError(resp, content, uri=self.uri)
+googleapiclient.errors.HttpError: <HttpError 400 when requesting https://generativelanguage.googleapis.com/$discovery/rest?version=v1beta&key=YOUR_API_KEY_HERE returned "API key not valid. Please pass a valid API key.". Details: "[{'@type': 'type.googleapis.com/google.rpc.ErrorInfo', 'reason': 'API_KEY_INVALID', 'domain': 'googleapis.com', 'metadata': {'service': 'generativelanguage.googleapis.com'}}, {'@type': 'type.googleapis.com/google.rpc.LocalizedMessage', 'locale': 'en-US', 'message': 'API key not valid. Please pass a valid API key.'}]">
+2025-10-19 21:23:47 | INFO     | DocumentPipeline | Worker 0 completed chunk_1: Pages 3-5: 0 pages extracted
+2025-10-19 21:23:49 | INFO     | DocumentPipeline | PHASE 2 COMPLETE | 2 results in 7.36s
+2025-10-19 21:23:49 | INFO     | DocumentPipeline | Processed 2 chunks
+2025-10-19 21:23:49 | INFO     | DocumentPipeline | Creating master schema
+2025-10-19 21:23:49 | ERROR    | DocumentPipeline | Schema creation error: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 485, in create_master_schema
+    response = await asyncio.get_event_loop().run_in_executor(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 487, in <lambda>
+    lambda: self.gemini.model.generate_content(prompt)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\generative_models.py", line 331, in generate_content
+    response = self._client.generate_content(
+        request,
+        **request_options,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 835, in generate_content
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.InvalidArgument: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-19 21:23:49 | INFO     | DocumentPipeline | PHASE 3: Merging 2 chunks
+2025-10-19 21:23:49 | INFO     | DocumentPipeline | PHASE 3 COMPLETE | 0 unique pages
+2025-10-19 21:23:49 | INFO     | DocumentPipeline | Merged into 0 pages
+2025-10-19 21:23:50 | ERROR    | DocumentPipeline | Party detection error: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-19 21:23:50 | INFO     | DocumentPipeline | Extracting summary data
+2025-10-19 21:23:50 | ERROR    | DocumentPipeline | Summary extraction error: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 422, in extract_summary_data
+    response = await asyncio.get_event_loop().run_in_executor(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.2544.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 424, in <lambda>
+    lambda: self.model.generate_content(prompt)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\generative_models.py", line 331, in generate_content
+    response = self._client.generate_content(
+        request,
+        **request_options,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 835, in generate_content
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.InvalidArgument: 400 API key not valid. Please pass a valid API key. [reason: "API_KEY_INVALID"
+domain: "googleapis.com"
+metadata {
+  key: "service"
+  value: "generativelanguage.googleapis.com"
+}
+, locale: "en-US"
+message: "API key not valid. Please pass a valid API key."
+]
+2025-10-19 21:23:50 | INFO     | DocumentPipeline | PIPELINE COMPLETE | Extracted 0/6 pages in 8.39s
+2025-10-19 21:23:50 | WARNING  | DocumentPipeline | Only extracted 0/6 pages - some pages may be missing
+2025-10-19 21:23:50 | INFO     | DocumentPipeline | Processing complete | UUID: 7f82246f-6f55-466b-ba91-1546a802768b | Pages: 0/6
+2025-10-19 21:23:50 | INFO     | DocumentPipeline | Stats: {'total_sections': 0, 'total_clauses': 0, 'total_tables': 0, 'total_images': 0}

@@ -1,0 +1,62 @@
+2025-10-19 21:24:54 | INFO     | DocumentPipeline | Starting Document Extraction API v2.1
+2025-10-19 21:24:54 | INFO     | DocumentPipeline | Starting Document Extraction API v2.1
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | File uploaded: Exhibit A_ Support, SLA and Data Security.pdf | UUID: 3b004c04-a13b-486e-af2a-731bf5c7aac9
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | Document has 6 pages
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | GeminiProvider initialized | Model: gemini-2.0-flash-exp
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | DocumentChunker initialized | Chunk size: 3, Overlap: 2
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | DocumentProcessingPipeline initialized
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | Starting extraction for Exhibit A_ Support, SLA and Data Security.pdf
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | Starting pipeline | Document: Exhibit A_ Support, SLA and Data Security.pdf | Pages: 6
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | PHASE 1: Creating chunks | Total pages: 6
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | Created chunk_0 | Pages: 0-2
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | Created chunk_1 | Pages: 3-5
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | PHASE 1 COMPLETE | 2 chunks covering all 6 pages in 0.06s
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | Created 2 chunks
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | PHASE 2: Processing 2 chunks with 2 workers
+2025-10-19 21:25:00 | INFO     | DocumentPipeline | Creating master schema
+2025-10-19 21:25:02 | INFO     | DocumentPipeline | Master schema: Service Level Agreement
+2025-10-19 21:25:02 | INFO     | DocumentPipeline | Worker 0 processing chunk_0
+2025-10-19 21:25:02 | INFO     | DocumentPipeline | Extracting chunk_0 | Pages: 0-2
+2025-10-19 21:25:04 | ERROR    | DocumentPipeline | Extraction error for chunk_0: Missing required parameter "ragStoreName"
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 199, in process_full_extraction
+    uploaded_file = genai.upload_file(chunk_pdf_path)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\files.py", line 85, in upload_file
+    response = client.create_file(
+        path=path, mime_type=mime_type, name=name, display_name=display_name, resumable=resumable
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\client.py", line 120, in create_file
+    request = self._local.discovery_api.media().upload(body={"file": file}, media_body=media)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\googleapiclient\discovery.py", line 1114, in method
+    raise TypeError('Missing required parameter "%s"' % name)
+TypeError: Missing required parameter "ragStoreName"
+2025-10-19 21:25:04 | INFO     | DocumentPipeline | Worker 0 completed chunk_0: Pages 0-2: 0 pages extracted
+2025-10-19 21:25:04 | INFO     | DocumentPipeline | Worker 0 processing chunk_1
+2025-10-19 21:25:04 | INFO     | DocumentPipeline | Extracting chunk_1 | Pages: 3-5
+2025-10-19 21:25:06 | ERROR    | DocumentPipeline | Extraction error for chunk_1: Missing required parameter "ragStoreName"
+Traceback (most recent call last):
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\app\routes\document_praser.py", line 199, in process_full_extraction
+    uploaded_file = genai.upload_file(chunk_pdf_path)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\files.py", line 85, in upload_file
+    response = client.create_file(
+        path=path, mime_type=mime_type, name=name, display_name=display_name, resumable=resumable
+    )
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\google\generativeai\client.py", line 120, in create_file
+    request = self._local.discovery_api.media().upload(body={"file": file}, media_body=media)
+  File "C:\Users\thula\OneDrive\Desktop\Murua_Con\Thulasi\Lib\site-packages\googleapiclient\discovery.py", line 1114, in method
+    raise TypeError('Missing required parameter "%s"' % name)
+TypeError: Missing required parameter "ragStoreName"
+2025-10-19 21:25:06 | INFO     | DocumentPipeline | Worker 0 completed chunk_1: Pages 3-5: 0 pages extracted
+2025-10-19 21:25:08 | INFO     | DocumentPipeline | PHASE 2 COMPLETE | 2 results in 7.64s
+2025-10-19 21:25:08 | INFO     | DocumentPipeline | Processed 2 chunks
+2025-10-19 21:25:08 | INFO     | DocumentPipeline | Creating master schema
+2025-10-19 21:25:09 | INFO     | DocumentPipeline | Master schema: Service Level Agreement
+2025-10-19 21:25:09 | INFO     | DocumentPipeline | PHASE 3: Merging 2 chunks
+2025-10-19 21:25:09 | INFO     | DocumentPipeline | PHASE 3 COMPLETE | 0 unique pages
+2025-10-19 21:25:09 | INFO     | DocumentPipeline | Merged into 0 pages
+2025-10-19 21:25:10 | INFO     | DocumentPipeline | Extracting summary data
+2025-10-19 21:25:11 | INFO     | DocumentPipeline | Summary: 0 obligations, 0 deadlines, 0 alerts
+2025-10-19 21:25:11 | INFO     | DocumentPipeline | PIPELINE COMPLETE | Extracted 0/6 pages in 10.85s
+2025-10-19 21:25:11 | WARNING  | DocumentPipeline | Only extracted 0/6 pages - some pages may be missing
+2025-10-19 21:25:11 | INFO     | DocumentPipeline | Processing complete | UUID: 3b004c04-a13b-486e-af2a-731bf5c7aac9 | Pages: 0/6
+2025-10-19 21:25:11 | INFO     | DocumentPipeline | Stats: {'total_sections': 0, 'total_clauses': 0, 'total_tables': 0, 'total_images': 0}

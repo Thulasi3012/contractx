@@ -16,13 +16,19 @@ class AppSettings(BaseSettings):
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "Development")
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "info")
     API_PREFIX: str = os.getenv("API_PREFIX", "/api")
-    WAPI_DELAY: float = 0.5
+
     # ============================================================
     # 🧠 Gemini / AI Agent Settings
     # ============================================================
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-2.0-flash-exp")
-    IMAGE_DPI: int = int(os.getenv("IMAGE_DPI", 250))
+
+    # New fields from .env
+    DEFAULT_CHUNK_SIZE: int = int(os.getenv("DEFAULT_CHUNK_SIZE", 20))
+    DEFAULT_OVERLAP_PAGES: int = int(os.getenv("DEFAULT_OVERLAP_PAGES", 2))
+    DEFAULT_MAX_WORKERS: int = int(os.getenv("DEFAULT_MAX_WORKERS", 4))
+
+    # Optional delay control for API rate management
     API_DELAY: float = float(os.getenv("API_DELAY", 0.5))
 
     # ============================================================
@@ -30,15 +36,15 @@ class AppSettings(BaseSettings):
     # ============================================================
     DB_HOST: str = os.getenv("DB_HOST", "localhost")
     DB_PORT: int = int(os.getenv("DB_PORT", 5432))
-    DB_NAME: str = os.getenv("DB_NAME", "")
-    DB_USER: str = os.getenv("DB_USER", "")
-    DB_PASSWORD: str = os.getenv("DB_PASSWORD", "")
+    DB_NAME: str = os.getenv("DB_NAME", "Contract")
+    DB_USER: str = os.getenv("DB_USER", "Thulasi")
+    DB_PASSWORD: str = os.getenv("DB_PASSWORD", "Thulasi@3012")
 
     # ============================================================
     # 🔐 Authentication & Security
     # ============================================================
     AUTH_REQUIRED: bool = os.getenv("AUTH_REQUIRED", "true").lower() == "true"
-    API_KEY: str = os.getenv("API_KEY", "")
+    API_KEY: str = os.getenv("API_KEY", "your-secure-api-key-here")
 
     # ============================================================
     # ⚙️ Server Settings
@@ -82,4 +88,8 @@ if settings.ENVIRONMENT.lower() != "production":
     print(f"✅ Database URL: {settings.DATABASE_URL}")
     print(f"✅ Upload folder: {settings.UPLOAD_FOLDER}")
     print(f"✅ Output folder: {settings.OUTPUT_FOLDER}")
-    print(f"gemini_api_key: {settings.GEMINI_API_KEY[:4]}...{settings.GEMINI_API_KEY[-4:]}")
+    print(f"✅ Chunk Size: {settings.DEFAULT_CHUNK_SIZE}")
+    print(f"✅ Overlap Pages: {settings.DEFAULT_OVERLAP_PAGES}")
+    print(f"✅ Max Workers: {settings.DEFAULT_MAX_WORKERS}")
+    print(f"✅ Gemini Model: {settings.GEMINI_MODEL}")
+    print(f"🔑 Gemini API Key: {settings.GEMINI_API_KEY[:4]}...{settings.GEMINI_API_KEY[-4:]}")
