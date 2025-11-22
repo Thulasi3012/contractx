@@ -1,0 +1,297 @@
+# Document Processing Pipeline - FastAPI
+
+AI-powered document extraction API using Gemini for comprehensive PDF analysis.
+
+## Features
+
+- 🚀 **Asynchronous Processing**: Background job processing with status tracking
+- 📄 **Full Extraction**: Text, sections, clauses, tables, images, and business fields
+- 🔄 **Smart Chunking**: Intelligent document splitting with context preservation
+- ⚡ **Parallel Processing**: Multi-worker async processing with rate limiting
+- 📊 **REST API**: Complete RESTful API with OpenAPI documentation
+- 🐳 **Docker Support**: Easy deployment with Docker and Docker Compose
+
+## Installation
+
+### Option 1: Local Installation
+
+```bash
+# Clone the repository
+git clone <your-repo>
+cd document-processing-api
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set up environment variables
+cp .env.example .env
+# Edit .env and add your GEMINI_API_KEY
+```
+
+### Option 2: Docker
+
+```bash
+# Build and run with Docker Compose
+docker-compose up -d
+
+# Or build manually
+docker build -t doc-processing-api .
+docker run -p 8000:8000 -e GEMINI_API_KEY=your_key doc-processing-api
+```
+
+## Usage
+
+### Starting the Server
+
+```bash
+# Development mode with auto-reload
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+# Production mode
+uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
+```
+
+### API Endpoints
+
+#### 1. Upload Document
+```bash
+curl -X POST "http://localhost:8000/api/upload" \
+  -F "file=@sample.pdf" \
+  -F "chunk_size=20" \
+  -F "overlap_pages=2" \
+  -F "max_workers=4"
+```
+
+**Response:**
+```json
+{
+  "job_id": "a1b2c3d4e5f6g7h8",
+  "status": "queued",
+  "message": "Document sample.pdf queued for processing"
+}
+```
+
+#### 2. Check Status
+```bash
+curl "http://localhost:8000/api/status/a1b2c3d4e5f6g7h8"
+```
+
+**Response:**
+```json
+{
+  "job_id": "a1b2c3d4e5f6g7h8",
+  "status": "processing",
+  "progress": 45.0,
+  "message": "Processing chunks...",
+  "result_path": null,
+  "error": null
+}
+```
+
+#### 3. Get Result
+```bash
+# Download as file
+curl "http://localhost:8000/api/result/a1b2c3d4e5f6g7h8" -o result.json
+
+# Get as JSON response
+curl "http://localhost:8000/api/result/a1b2c3d4e5f6g7h8/json"
+```
+
+#### 4. List All Jobs
+```bash
+curl "http://localhost:8000/api/jobs"
+```
+
+#### 5. Delete Job
+```bash
+curl -X DELETE "http://localhost:8000/api/jobs/a1b2c3d4e5f6g7h8"
+```
+
+### Using Python Client
+
+```python
+from client_example import process_document_sync
+
+# Process document and wait for completion
+result = process_document_sync(
+    file_path="sample.pdf",
+    output_path="output.json",
+    chunk_size=20,
+    overlap_pages=2,
+    max_workers=4
+)
+
+print(f"Total pages: {result['document_metadata']['total_pages']}")
+print(f"Document type: {result['document_metadata']['document_type']}")
+```
+
+### Interactive Documentation
+
+FastAPI provides automatic interactive API documentation:
+
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `GEMINI_API_KEY` | Google Gemini API key | Required |
+| `HOST` | Server host | 0.0.0.0 |
+| `PORT` | Server port | 8000 |
+| `DEFAULT_CHUNK_SIZE` | Pages per chunk | 20 |
+| `DEFAULT_OVERLAP_PAGES` | Overlap between chunks | 2 |
+| `DEFAULT_MAX_WORKERS` | Parallel workers | 4 |
+
+### Processing Parameters
+
+- **chunk_size** (5-50): Number of pages per processing chunk
+- **overlap_pages** (0-5): Pages to overlap between chunks
+- **max_workers** (1-10): Number of parallel processing workers
+
+## Output Format
+
+The API returns structured JSON with complete document extraction:
+
+```json
+{
+  "document_metadata": {
+    "document_type": "contract",
+    "total_pages": 50,
+    "processing_date": "2025-10-19 10:30:00",
+    "master_schema": {...}
+  },
+  "pages": [
+    {
+      "page_number": 1,
+      "raw_text": "Full page text...",
+      "sections": [
+        {
+          "section_title": "Introduction",
+          "section_number": "1.0",
+          "content": "Section content...",
+          "clauses": [
+            {
+              "clause_id": "1.1",
+              "text": "Clause text...",
+              "sub_clauses": [...]
+            }
+          ]
+        }
+      ],
+      "tables": [...],
+      "images": "No images on this page",
+      "business_fields": {
+        "obligations": "Party A must...",
+        "alerts": "Risk of...",
+        "buyer_details": "...",
+        "seller_details": "...",
+        "deadlines": "2025-12-31"
+      }
+    }
+  ],
+  "overall_summary": "Comprehensive document summary..."
+}
+```
+
+## Architecture
+
+1. **Upload**: PDF uploaded and saved with unique job ID
+2. **Chunking**: Document split into intelligent chunks with overlap
+3. **Processing**: Parallel extraction using Gemini API with rate limiting
+4. **Merging**: Results combined into page-by-page structure
+5. **Summary**: Overall document summary generated
+
+## Error Handling
+
+The API provides detailed error responses:
+
+```json
+{
+  "detail": "Error message",
+  "status_code": 400
+}
+```
+
+Common status codes:
+- `200`: Success
+- `400`: Bad request
+- `404`: Job not found
+- `500`: Server error
+
+## Performance Considerations
+
+- **Rate Limiting**: Automatic rate limiting for Gemini API (60 RPM)
+- **Async Processing**: Background jobs don't block API
+- **Memory Management**: Chunks processed independently
+- **Timeout**: Default 1-hour timeout per job
+
+## Logging
+
+Logs are saved to:
+- Console output (INFO level)
+- `pipeline_YYYYMMDD_HHMMSS.log` (DEBUG level)
+
+## Troubleshooting
+
+### API Key Issues
+```bash
+# Verify API key is set
+echo $GEMINI_API_KEY
+
+# Test with curl
+curl "http://localhost:8000/health"
+```
+
+### Job Stuck in Processing
+- Check logs for errors
+- Verify Gemini API is responding
+- Check rate limits
+
+### Memory Issues
+- Reduce `max_workers`
+- Decrease `chunk_size`
+- Process smaller documents
+
+## Development
+
+### Running Tests
+```bash
+pytest tests/
+```
+
+### Code Formatting
+```bash
+black main.py
+flake8 main.py
+```
+
+### Adding New Features
+1. Add endpoint in `main.py`
+2. Update Pydantic models
+3. Update documentation
+4. Add tests
+
+## License
+
+MIT License
+
+## Support
+
+For issues and questions:
+- GitHub Issues: [your-repo/issues]
+- Documentation: [your-docs-url]
+
+## Changelog
+
+### v1.0.0 (2025-10-19)
+- Initial release
+- Full extraction pipeline
+- REST API implementation
+- Docker support
